@@ -11,18 +11,18 @@ class Candidat{
 	private $_codepostal;
 	private $_ville;
 	private $_nationalite;
-	private $_date_naissance;
-	private $_departementnaissance;
+	private $_dateNaissance;
+	private $_departementNaissance;
 	private $_lieu_naissance;
-	private $_num_securite_sociale;
-	private $_clesecuritesociale;
+	private $_numSecuriteSociale;
+	private $_cleSecuriteSociale;
 	private $_demande;
-	private $_type_recrutement;
-	private $_date_debut_contrat;
+	private $_typeRecrutement;
+	private $_dateDebutContrat;
 	private $_societes;
-	private $_typecontratGRE;
-	private $_nb_jours_rtt_monetises;
-	private $_date_fin_contrat;
+	private $_typeContratGRE;
+	private $_nbJoursRttMonetises;
+	private $_dateFinContrat;
 	private $_direction;
 	private $_poste;
 	
@@ -91,19 +91,19 @@ class Candidat{
 	}
 
 	public function get_date_naissance(){
-		return $this->_date_naissance;
+		return $this->_dateNaissance;
 	}
 
 	public function set_date_naissance($_date_naissance){
-		$this->_date_naissance = $_date_naissance;
+		$this->_dateNaissance = $_date_naissance;
 	}
 
 	public function get_departementnaissance(){
-		return $this->_departementnaissance;
+		return $this->_departementNaissance;
 	}
 
 	public function set_departementnaissance($_departementnaissance){
-		$this->_departementnaissance = $_departementnaissance;
+		$this->_departementNaissance = $_departementnaissance;
 	}
 
 	public function get_lieu_naissance(){
@@ -115,19 +115,19 @@ class Candidat{
 	}
 
 	public function get_num_securite_sociale(){
-		return $this->_num_securite_sociale;
+		return $this->_numSecuriteSociale;
 	}
 
 	public function set_num_securite_sociale($_num_securite_sociale){
-		$this->_num_securite_sociale = $_num_securite_sociale;
+		$this->_numSecuriteSociale = $_num_securite_sociale;
 	}
 
 	public function get_clesecuritesociale(){
-		return $this->_clesecuritesociale;
+		return $this->_cleSecuriteSociale;
 	}
 
 	public function set_clesecuritesociale($_clesecuritesociale){
-		$this->_clesecuritesociale = $_clesecuritesociale;
+		$this->_cleSecuriteSociale = $_clesecuritesociale;
 	}
 	
 	public function get_demande(){
@@ -139,19 +139,19 @@ class Candidat{
 	}
 
 	public function get_type_recrutement(){
-		return $this->_type_recrutement;
+		return $this->_typeRecrutement;
 	}
 
 	public function set_type_recrutement($_type_recrutement){
-		$this->_type_recrutement = $_type_recrutement;
+		$this->_typeRecrutement = $_type_recrutement;
 	}
 
 	public function get_date_debut_contrat(){
-		return $this->_date_debut_contrat;
+		return $this->_dateDebutContrat;
 	}
 
 	public function set_date_debut_contrat($_date_debut_contrat){
-		$this->_date_debut_contrat = $_date_debut_contrat;
+		$this->_dateDebutContrat = $_date_debut_contrat;
 	}
 
 	public function get_societes(){
@@ -163,27 +163,27 @@ class Candidat{
 	}
 
 	public function get_typecontratGRE(){
-		return $this->_typecontratGRE;
+		return $this->_typeContratGRE;
 	}
 
 	public function set_typecontratGRE($_typecontratGRE){
-		$this->_typecontratGRE = $_typecontratGRE;
+		$this->_typeContratGRE = $_typecontratGRE;
 	}
 
 	public function get_nb_jours_rtt_monetises(){
-		return $this->_nb_jours_rtt_monetises;
+		return $this->_nbJoursRttMonetises;
 	}
 
 	public function set_nb_jours_rtt_monetises($_nb_jours_rtt_monetises){
-		$this->_nb_jours_rtt_monetises = $_nb_jours_rtt_monetises;
+		$this->_nbJoursRttMonetises = $_nb_jours_rtt_monetises;
 	}
 
 	public function get_date_fin_contrat(){
-		return $this->_date_fin_contrat;
+		return $this->_dateFinContrat;
 	}
 
 	public function set_date_fin_contrat($_date_fin_contrat){
-		$this->_date_fin_contrat = $_date_fin_contrat;
+		$this->_dateFinContrat = $_date_fin_contrat;
 	}
 
 	public function get_direction(){

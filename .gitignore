@@ -1,0 +1,9 @@
+/bin
+
+# ignore all files ending with ~
+*~ 
+
+# Eclipse configuration files #
+######################
+.settings
+.projet

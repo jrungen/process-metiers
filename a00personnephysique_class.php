@@ -6,7 +6,7 @@
 class PersonnePhysique {
 	private $_cle;
 	private $_roletiers;
-	private $_typemouvement;
+	private $_typeMouvement;
 	private $_civilite;
 	private $_nom;
 	private $_prenom;
@@ -16,9 +16,9 @@ class PersonnePhysique {
 	private $_ville;
 	private $_nationalite;
 	private $_datenaissance;
-	private $_departementnaissance;
-	private $_lieunaissance;
-	private $_numerosecu;
+	private $_departementNaissance;
+	private $_lieuNaissance;
+	private $_numSecuriteSociale;
 	private $_clesecu;
 	private $_actif;
 
@@ -73,9 +73,9 @@ class PersonnePhysique {
 		$this->_ville = $candidat->get_ville();
 		$this->_nationalite = $candidat->get_nationalite();
 		$this->_datenaissance = $candidat->get_date_naissance();
-		$this->_departementnaissance = $candidat->get_departementnaissance();
-		$this->_lieunaissance = $candidat->get_lieu_naissance();
-		$this->_numerosecu = $candidat->get_num_securite_sociale();
+		$this->_departementNaissance = $candidat->get_departementnaissance();
+		$this->_lieuNaissance = $candidat->get_lieu_naissance();
+		$this->$_numSecuriteSociale = $candidat->get_num_securite_sociale();
 		$this->_clesecu = $candidat->get_clesecuritesociale();
 		$this->_cle = $personnephysique_cle;
 	}
@@ -93,11 +93,11 @@ class PersonnePhysique {
 	}
 
 	public function get_typemouvement(){
-		return $this->_typemouvement;
+		return $this->_typeMouvement;
 	}
 
 	public function set_typemouvement($_typemouvement){
-		$this->_typemouvement = $_typemouvement;
+		$this->_typeMouvement = $_typemouvement;
 	}
 
 	public function get_civilite(){
@@ -173,27 +173,27 @@ class PersonnePhysique {
 	}
 
 	public function get_departementnaissance(){
-		return $this->_departementnaissance;
+		return $this->_departementNaissance;
 	}
 
 	public function set_departementnaissance($_departementnaissance){
-		$this->_departementnaissance = $_departementnaissance;
+		$this->_departementNaissance = $_departementnaissance;
 	}
 
 	public function get_lieunaissance(){
-		return $this->_lieunaissance;
+		return $this->_lieuNaissance;
 	}
 
 	public function set_lieunaissance($_lieunaissance){
-		$this->_lieunaissance = $_lieunaissance;
+		$this->_lieuNaissance = $_lieunaissance;
 	}
 
 	public function get_numerosecu(){
-		return $this->_numerosecu;
+		return $this->$_numSecuriteSociale;
 	}
 
 	public function set_numerosecu($_numerosecu){
-		$this->_numerosecu = $_numerosecu;
+		$this->$_numSecuriteSociale = $_numerosecu;
 	}
 
 	public function get_clesecu(){
@@ -226,7 +226,7 @@ class PersonnePhysique {
 				a00nationalite, a00datenaissance, a00departementnaissance, a00lieunaissance, a00numerosecu,a00clesecu, a00actif,
 				creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
 				values
-				('".$this->_cle."',  '".Roles::SALARIE."',  '".TypeMvmt::ENTREE."', '".$this->_civilite."', '".$this->_nom."', '".$this->_prenom."','".$this->_adresse."','".$this->_complement."','".$this->_codepostal."','".$this->_ville."','".$this->_nationalite."','".$this->_datenaissance."','".$this->_departementnaissance."','".$this->_lieunaissance."','".$this->_numerosecu."','".$this->_clesecu."', 'Oui', 'candidat', CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME() )
+				('".$this->_cle."',  '".Roles::SALARIE."',  '".TypeMvmt::ENTREE."', '".$this->_civilite."', '".$this->_nom."', '".$this->_prenom."','".$this->_adresse."','".$this->_complement."','".$this->_codepostal."','".$this->_ville."','".$this->_nationalite."','".$this->_datenaissance."','".$this->_departementNaissance."','".$this->_lieuNaissance."','".$this->$_numSecuriteSociale."','".$this->_clesecu."', 'Oui', 'candidat', CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME() )
 				";
 
 		// on va chercher tous les enregistrements de la requ?te

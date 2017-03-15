@@ -334,6 +334,8 @@ if($_REQUEST['mode']=='createItems'){
 				where cle = '".$data_demande[0]->dar_cle_pap."'");
 	$update_pap->execute();
 	/*-----------------------------------*/
+	
+	$personnePhysique->set_departementnaissance('');
 
 	/*
      * Création mouvement DRH
