@@ -1,2 +1,2 @@
-# ALTAREA QUALIF process-metiers
+# QUALIF process-metiers
 # process-metiers
