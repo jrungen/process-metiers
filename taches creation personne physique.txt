@@ -1,0 +1,29 @@
+// récupérer les données du candidat sélectionné
+
+// récupérer les données r02listetaches
+
+// Création de la personne physique
+
+// Requete demande (DAR)
+
+// Requete pour mettre à jour le statut du PAP
+
+/*
+ * Création mouvement DRH
+ */
+ 
+/*
+ * Création Rôle Tiers
+ */
+
+/*
+* Création mouvement DRI
+*/
+
+/*
+* Création mouvement DSI
+*/
+
+/*
+ * Création tâches
+ */
