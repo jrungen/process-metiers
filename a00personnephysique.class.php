@@ -1,11 +1,12 @@
 <?php
 
-// include 'r03typemouvement_class.php'; // Type mouvement
-// include 'r04roletiers_class.php'; // Role tiers
-
+/**
+ * @author JRU
+ *
+ */
 class PersonnePhysique {
 	private $_cle;
-	private $_roletiers;
+	private $_roleTiers;
 	private $_typeMouvement;
 	private $_civilite;
 	private $_nom;
@@ -21,6 +22,7 @@ class PersonnePhysique {
 	private $_numSecuriteSociale;
 	private $_clesecu;
 	private $_actif;
+	private $_candidat;
 
 	private static function generateKey(){ 
 		/*
@@ -75,29 +77,30 @@ class PersonnePhysique {
 		$this->_datenaissance = $candidat->get_date_naissance();
 		$this->_departementNaissance = $candidat->get_departementnaissance();
 		$this->_lieuNaissance = $candidat->get_lieu_naissance();
-		$this->$_numSecuriteSociale = $candidat->get_num_securite_sociale();
+		$this->_numSecuriteSociale = $candidat->get_num_securite_sociale();
 		$this->_clesecu = $candidat->get_clesecuritesociale();
 		$this->_cle = $personnephysique_cle;
+		$this->_candidat = $candidat;
 	}
 
 	public function get_cle(){
 		return $this->_cle;
 	}
 
-	public function get_roletiers(){
-		return $this->_roletiers;
+	public function get_roleTiers(){
+		return $this->_roleTiers;
 	}
 
-	public function set_roletiers($_roletiers){	
-		$this->_roletiers = $_roletiers;
+	public function set_roleTiers($_roleTiers){	
+		$this->_roleTiers = $_roleTiers;
 	}
 
-	public function get_typemouvement(){
+	public function get_typeMouvement(){
 		return $this->_typeMouvement;
 	}
 
-	public function set_typemouvement($_typemouvement){
-		$this->_typeMouvement = $_typemouvement;
+	public function set_typeMouvement($_typeMouvement){
+		$this->_typeMouvement = $_typeMouvement;
 	}
 
 	public function get_civilite(){
@@ -212,11 +215,14 @@ class PersonnePhysique {
 		$this->_actif = $_actif;
 	}
 	
-	public function create(){
-
-		/*
-     * Création de la personne physique
+	public function get_candidat(){
+		return $this->_candidat;
+	}
+	
+	/**
+	 * Création de la personne physique en base.
 	 */
+	public function create(){
 	try{
 
 		// Requete INSERT INTO

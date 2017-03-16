@@ -170,12 +170,12 @@ class Candidat{
 		$this->_typeContratGRE = $_typecontratGRE;
 	}
 
-	public function get_nb_jours_rtt_monetises(){
+	public function get_nbJoursRttMonetisess(){
 		return $this->_nbJoursRttMonetises;
 	}
 
-	public function set_nb_jours_rtt_monetises($_nb_jours_rtt_monetises){
-		$this->_nbJoursRttMonetises = $_nb_jours_rtt_monetises;
+	public function set_nbJoursRttMonetises($_nbJoursRttMonetises){
+		$this->_nbJoursRttMonetises = $_nbJoursRttMonetises;
 	}
 
 	public function get_date_fin_contrat(){
@@ -266,7 +266,7 @@ class Candidat{
 		$candidat->set_date_debut_contrat($data[0]->t01_30_date_debut_contrat);
 		$candidat->set_societes($data[0]->cs00societes);
 		$candidat->set_typecontratGRE($data[0]->t01typecontratGRE);
-		$candidat->set_nb_jours_rtt_monetises($data[0]->t01_19_nb_jours_rtt_monetises);
+		$candidat->set_nbJoursRttMonetises($data[0]->t01_19_nb_jours_rtt_monetises);
 		$candidat->set_date_fin_contrat($data[0]->t01_31_date_fin_contrat);
 		$candidat->set_direction($data[0]->cs00direction);
 		$candidat->set_poste($data[0]->t01_32_poste);
