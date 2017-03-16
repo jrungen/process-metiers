@@ -277,7 +277,25 @@ if($_REQUEST['mode']=='createItems'){
 	$idcandidat = $_REQUEST['idcandidat'];	
 	$candidat = Candidat::findById($idcandidat);
 
-	get_Taches ( $allocation, $allocation, $e, $e, $allocation );
+	// récupérer les données r02listetaches
+	try{	
+		// Requete INSERT INTO
+		$query = "SELECT * FROM r02listetaches where r03typemouvement = '".TypeMvmt::ENTREE."'";
+
+		// on va chercher tous les enregistrements de la requ?te
+		$result=Script::$db->prepare($query); 
+		$result->execute();
+		
+		// on dit qu'on veut que le r?sultat soit r?cup?rable sous forme de tableau
+		$data_r02listetaches = $result->fetchAll((PDO::FETCH_OBJ));
+		
+		// on ferme le curseur des r?sultats			
+		$result->closeCursor();
+	}
+	catch(PDOException  $e){
+		$errMsg = $e->getMessage();
+		echo $errMsg;
+	}
 	
 	// Création de la personne physique
 	$personnePhysique = new PersonnePhysique($candidat);
@@ -552,33 +570,4 @@ if($_REQUEST['mode']=='createItems'){
 	}
 	/*-----------------------------------*/
 
-}
-
-
-/**
- * @param unknown $type_mouvement
- * @param unknown $allocation_tache
- * @return unknown
- */
-function get_Taches($type_mouvement, $allocation_tache) {
-	// récupérer les données r02listetaches
-	try{	
-		// Requete INSERT INTO
-		$query = "SELECT * FROM r02listetaches where r03typemouvement = '".$type_mouvement."' AND r01allocationtache = '".$allocation_tache."'";
-
-		// on va chercher tous les enregistrements de la requ?te
-		$result=Script::$db->prepare($query); 
-		$result->execute();
-		
-		// on dit qu'on veut que le r?sultat soit r?cup?rable sous forme de tableau
-		$data_r02listetaches = $result->fetchAll((PDO::FETCH_OBJ));
-		
-		// on ferme le curseur des r?sultats			
-		$result->closeCursor();
-	}
-	catch(PDOException  $e){
-		$errMsg = $e->getMessage();
-		echo $errMsg;
-	}
-	return $data_r02listetaches;
 }
