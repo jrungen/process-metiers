@@ -8,22 +8,28 @@
 
 // Requete pour mettre à jour le statut du PAP
 
-/*
+
+/*************************/
  * Création mouvement DRH
- */
- 
+ */ 
 /*
  * Création Rôle Tiers
  */
-
 /*
+ * Création tâches
+ */
+ 
+ 
+/*************************/
 * Création mouvement DRI
 */
-
 /*
+ * Création tâches
+ */
+ 
+/*************************/
 * Création mouvement DSI
 */
-
 /*
  * Création tâches
  */
