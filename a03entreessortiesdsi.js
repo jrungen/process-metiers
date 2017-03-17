@@ -1,19 +1,6 @@
 function onLoad_a03entreessortiesdsi (){
 	var thisComponent = this;
 	
-	// JR le 03/02/2017 suppression de l'ancienne version de la CARTOUCHE qui était avec du PHP
-	// // CARTOUCHE
-	// var vida03entreessortiesdsi = thisComponent.getValue('ida03entreessortiesdsi');
-	// $.get("template_auto/a03entreessortiesdsi/a03entreessortiesdsi.php", {
-		// mode: "getCartouche",
-		// ida03entreessortiesdsi: vida03entreessortiesdsi
-	// })
-	// .done(function(data_cartouche){
-		// thisComponent.ui.find('.form-horizontal > h3').html('<i class="fa fa-user" style="color:#8E3557;"></i> '+data_cartouche[0].Nom+' '+data_cartouche[0].Prenom+' '+ data_cartouche[0].roletiers+' '+data_cartouche[0].Mouvement);
-
-	// })
-	// .fail(gopaas.dialog.ajaxFail);
-
 	// JR le 03/02/2017 Création cartouche avec des get-item
 	// Appeler webservice get-item pour les salaries
 	if(thisComponent.getValue('a00personnephysique')){
@@ -77,6 +64,50 @@ function onLoad_a03entreessortiesdsi (){
 		.fail(gopaas.dialog.ajaxFail);
 	}
 	
+	/*************************************************************************************/
+	/* AJOUT JR DU 17/03/2017 Remplir le libellé type de mouvement dans l'onglet système */
+	/*************************************************************************************/
+	
+	// lancer la vérification au chargement
+	updateLibelleMvt(thisComponent);
+		
+	// SCRIPT avec intervalId
+    thisComponent.ui.find("[name=a05typemouvement]").data("oldValue", thisComponent.ui.find("[name=a05typemouvement]").val());
+    var intervalId2 = setInterval(function() {
+        if (!thisComponent.ui.closest("body").length) { // si le composant a été supprimé (onglet fermé)
+            clearInterval(intervalId2);
+            return;
+        }
+        var a05typemouvement = thisComponent.ui.find("[name=a05typemouvement]");
+        if (a05typemouvement.val() !== a05typemouvement.data("oldValue")) {
+			a05typemouvement.data("oldValue", a05typemouvement.val());
+			updateLibelleMvt(thisComponent);
+        }
+    }, 1000);
+	
+	function updateLibelleMvt(thisComponent){
+		
+	 	// get-item pour sur a05typemouvement
+		if (thisComponent.getValue('a05typemouvement')){
+			$.get('webservice/item/get-item.php', {
+				tableName	: 'a05typemouvement',
+				itemKey  	: thisComponent.getValue('a05typemouvement')
+			})
+			.done(function(data5){
+			// je récupère l'intitulé du type de mouvement
+				var LibelleMvt = data5.r03libelle_typemouvement;
+			
+				thisComponent.setValue('libelle_typemouvement', LibelleMvt);
+
+			}).fail(gopaas.dialog.ajaxFail);
+		}
+
+	}
+
+	/***********************************************************************************/
+	/* FIN JR DU 17/03/2017 Remplir le libellé type de mouvement dans l'onglet système */
+	/***********************************************************************************/
+
 	return true;
 }
 function onSave_a03entreessortiesdsi (){

@@ -42,7 +42,7 @@ function onLoad_a05typemouvement (){
 							itemKey  	: thisComponent.getValue('r03typemouvement')
 						})
 						.done(function(data3){
-						// je récupère l'intitulé du roletiers
+						// je récupère l'intitulé du type de mouvement
 							var libelle_mouvement = data3.r03libelletypemouvement;
 							
 							var vCartouche3 = vCartouche2+' - '+libelle_mouvement;
@@ -141,7 +141,7 @@ function onLoad_a05typemouvement (){
 	/************************************************************************************/
 
 	// lancer la vérification au chargement
-	console.log(thisComponent.ui.find("#a05vehicule").val());
+	// console.log(thisComponent.ui.find("#a05vehicule").val());
 	VerifVehicule(thisComponent);
 		
 	// SCRIPT avec intervalId
@@ -163,10 +163,11 @@ function onLoad_a05typemouvement (){
 		
 		var vVehicule = thisComponent.getValue('a05vehicule');
 		
-		if(vVehicule !== 'VEH001'){
+		if(vVehicule !== 'VEH001' | vVehicule !== '' ){
 			thisComponent.ui.find("#combo_a05vehiculeperiodeessai").closest(".form-group").show();
 			
-		}else{
+		}
+		if(vVehicule === 'VEH001' | vVehicule === '' ){
 			thisComponent.ui.find("#combo_a05vehiculeperiodeessai").closest(".form-group").hide();
 		}
 	}
@@ -174,7 +175,110 @@ function onLoad_a05typemouvement (){
 	/****************************************************************************************/
 	/* FIN AJOUT AKE DU 27/02/2017 CONDITION D'AFFICHAGE DU CHAMP VEHICULE SI PERIODE DESSAI*/
 	/****************************************************************************************/
+
+	/*************************************************************************************/
+	/* AJOUT JR DU 17/03/2017 Remplir le libellé type de mouvement dans l'onglet système */
+	/*************************************************************************************/
 	
+	// lancer la vérification au chargement
+	updateLibelleMvt(thisComponent);
+		
+	// SCRIPT avec intervalId
+    thisComponent.ui.find("[name=r03typemouvement]").data("oldValue", thisComponent.ui.find("[name=r03typemouvement]").val());
+    var intervalId2 = setInterval(function() {
+        if (!thisComponent.ui.closest("body").length) { // si le composant a été supprimé (onglet fermé)
+            clearInterval(intervalId2);
+            return;
+        }
+        var r03typemouvement = thisComponent.ui.find("[name=r03typemouvement]");
+        if (r03typemouvement.val() !== r03typemouvement.data("oldValue")) {
+			r03typemouvement.data("oldValue", r03typemouvement.val());
+			updateLibelleMvt(thisComponent);
+        }
+    }, 1000);
+	
+	function updateLibelleMvt(thisComponent){
+		
+	 	// get-item pour sur r03typemouvement
+		if (thisComponent.getValue('r03typemouvement')){
+			$.get('webservice/item/get-item.php', {
+				tableName	: 'r03typemouvement',
+				itemKey  	: thisComponent.getValue('r03typemouvement')
+			})
+			.done(function(data4){
+			// je récupère l'intitulé du type de mouvement
+				var LibelleMvt = data4.r03libelletypemouvement;
+			
+				thisComponent.setValue('r03libelle_typemouvement', LibelleMvt);
+
+			}).fail(gopaas.dialog.ajaxFail);
+		}
+
+	}
+
+	/***********************************************************************************/
+	/* FIN JR DU 17/03/2017 Remplir le libellé type de mouvement dans l'onglet système */
+	/***********************************************************************************/
+
+	/***********************************************************************/
+	/* AJOUT JR DU 17/03/2017 Remplir le périmètre depuis le champ société */
+	/***********************************************************************/
+	
+	// lancer la vérification au chargement
+	updatePerimetre(thisComponent);
+		
+	// SCRIPT avec intervalId
+    thisComponent.ui.find("[name=r00societes]").data("oldValue", thisComponent.ui.find("[name=r00societes]").val());
+    var intervalId2 = setInterval(function() {
+        if (!thisComponent.ui.closest("body").length) { // si le composant a été supprimé (onglet fermé)
+            clearInterval(intervalId2);
+            return;
+        }
+        var r00societes = thisComponent.ui.find("[name=r00societes]");
+        if (r00societes.val() !== r00societes.data("oldValue")) {
+			r00societes.data("oldValue", r00societes.val());
+			updatePerimetre(thisComponent);
+        }
+    }, 1000);
+	
+	function updatePerimetre(thisComponent){
+		
+	 	// get-item pour sur r00societes
+		if (thisComponent.getValue('r00societes')){
+			$.get('webservice/item/get-item.php', {
+				tableName	: 'r00societes',
+				itemKey  	: thisComponent.getValue('r00societes')
+			})
+			.done(function(data5){
+			// je récupère la clé du périmètre
+				var clePerimetre = data5.r00perimetre;
+			
+				thisComponent.setConnectionValue('a05perimetre', 'r28perimetre', clePerimetre);
+				
+/*			 	// get-item pour sur r28perimetre
+				if (clePerimetre){
+					$.get('webservice/item/get-item.php', {
+						tableName	: 'r28perimetre',
+						itemKey  	: clePerimetre
+					})
+					.done(function(data6){
+					// je récupère le complément du périmètre
+						var complementPerimetre = data6.r28perimetre;
+					
+						thisComponent.setValue('COMPLEMENT_a05perimetre', complementPerimetre);
+
+					}).fail(gopaas.dialog.ajaxFail);
+				}*/
+
+			}).fail(gopaas.dialog.ajaxFail);
+		}
+
+	}
+
+	/**********************************************************************/
+	/* FIN JR DU 17/03/2017 Remplir le périmètre depuis le champ société  */
+	/**********************************************************************/
+
 	return true;
 }
 
