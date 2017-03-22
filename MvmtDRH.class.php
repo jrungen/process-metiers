@@ -33,7 +33,8 @@ class MvmtDRH extends Mvmt{
 		if (is_null($personnePhysique->get_candidat())) {
 			//TODO
 		}
-		else{ // Creation depuis candidat.
+		else{
+			// Creation depuis candidat.
 			$this->_dateEffet = $this->_personnePhysique->get_candidat()->get_dateDebutContrat();
 			$this->_societes = $this->_personnePhysique->get_candidat()->get_societes();
 			$this->_typeContrat = $this->_personnePhysique->get_candidat()->get_typecontratGRE();
@@ -94,10 +95,10 @@ class MvmtDRH extends Mvmt{
 	}
 	
 	
-	private function preCreate(){
+	protected function preCreate(){
 	}
 	
-	private function postCreate(){
+	protected function postCreate(){
 		MvmtManager::getInstance($this)->listActions();
 	}
 }

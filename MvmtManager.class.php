@@ -19,7 +19,9 @@ class MvmtManager {
 	
 
 	public static function getInstance($mvmt){
-		$candidat = $mvmt->get_personnePhysique()->get_candidat();
+		$pp = $mvmt->get_personnePhysique();
+		$candidat = $pp->get_candidat();
+		
 		if (is_null($candidat)) {
 			$this->_source = 'Persone physique'; // personne physique
 		}else{

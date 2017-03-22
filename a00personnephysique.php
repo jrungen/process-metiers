@@ -13,7 +13,7 @@ include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDRI.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDSI.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtManager.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/demande.class.php';
-include dirname(dirname(dirname(__FILE__))).'a07postesbudgetaires.class.php';
+include dirname(dirname(dirname(__FILE__))).'/asset/class/a07postesbudgetaires.class.php';
 
 // Création fiche PP manuellement
 if($_REQUEST['mode']=='getKey'){

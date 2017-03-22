@@ -277,7 +277,7 @@ class PersonnePhysique {
 				$errMsg = $e->getMessage();
 				echo $errMsg;
 			}
-		postCreate();
+		$this->postCreate();
 	}
 	
 	private function postCreate(){

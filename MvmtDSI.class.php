@@ -65,10 +65,10 @@ class MvmtDSI extends Mvmt{
 		
 	}
 	
-	private function préCreate(){
+	protected function preCreate(){
 	}
 	
-	private function postCreate(){
+	protected function postCreate(){
 	}
 }
 

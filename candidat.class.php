@@ -26,6 +26,7 @@ class Candidat{
 	private $_direction;
 	private $_poste;
 	private $_detailMouvement;
+	private $_cle;
 	
 	public function get_detailMouvement(){
 		return $this->_detailMouvement;
@@ -211,6 +212,14 @@ class Candidat{
 		$this->_poste = $_poste;
 	}
 	
+	public function get_cle(){
+		return $this->_cle;
+	}
+
+	public function set_cle($_cle){
+		$this->_cle = $_cle;
+	}
+	
 	public static function findById($idCandidat) {
 		
 		try{
@@ -237,7 +246,8 @@ class Candidat{
 						t01_31_date_fin_contrat,
 						cs00direction,
 						t01_32_poste,
-						r32detailmouvement
+						r32detailmouvement,
+						cle
 					FROM candidat WHERE idcandidat = '".$idCandidat."'";
 
 			// on va chercher tous les enregistrements de la requ?te
@@ -280,6 +290,7 @@ class Candidat{
 		$candidat->set_direction($data[0]->cs00direction);
 		$candidat->set_poste($data[0]->t01_32_poste);
 		$candidat->set_detailMouvement($data[0]->r32detailmouvement);
+		$candidat->set_cle($data[0]->cle);
 		return $candidat;
 
 	}
