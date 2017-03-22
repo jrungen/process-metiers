@@ -13,6 +13,7 @@ include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDRI.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDSI.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtManager.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/demande.class.php';
+include dirname(dirname(dirname(__FILE__))).'a07postesbudgetaires.class.php';
 
 // Création fiche PP manuellement
 if($_REQUEST['mode']=='getKey'){
@@ -42,38 +43,7 @@ function createPpAndMvmt(){
 	// récupérer le référentiel des tâches pour savoir quel sont les tâches à créer.
 	$data_r02listetaches = TacheHelper::get_refTaches($personnePhysique->get_roleTiers(),TypeMvmt::ARRIVEE);
 		
-	// Requete demande (DAR)
-	try{
-		$query_demande = "SELECT
-						demande.a07postesbudgetaires as dar_cle_pap,
-						demande.d00nommanager as dar_superieur,
-						demande.d00personneremplacee as dar_remplace
-					FROM demande
-					where cle = '".$candidat->get_demande()."';
-					";
-		// on va chercher tous les enregistrements de la requête
-		$result_demande=Script::$db->prepare($query_demande);
-		$result_demande->execute();
 	
-		// on dit qu'on veut que le résultat soit récupérable sous forme de tableau
-		$data_demande = $result_demande->fetchAll((PDO::FETCH_OBJ));
-	
-		// on ferme le curseur des résultats
-		$result_demande->closeCursor();
-	}
-	catch(PDOException  $e){
-		$errMsg = $e->getMessage();
-		echo $errMsg;
-	}
-	/*-----------------------------------*/
-	
-	// Requete pour mettre à jour le statut du PAP (validation du recrutement)
-	$update_pap = Script::$db->prepare("UPDATE a07postesbudgetaires
-				SET a07statutpap = '".StatutPAP::RECRUTEMENT_VALIDE."',
-				a07salariePAP = '".$personnePhysique->get_cle()."',
-				a07originerecrutement = '".$candidat->get_type_recrutement()."'
-				where cle = '".$data_demande[0]->dar_cle_pap."'");
-	$update_pap->execute();
 	/*-----------------------------------*/
 	
 	
@@ -131,8 +101,6 @@ function createPpAndMvmt(){
 		$errMsg = $e->getMessage();
 		echo $errMsg;
 	}
-	/* A SUPPRIMER */
-	
 	
 	/*-----------------------------------*/
 	

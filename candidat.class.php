@@ -16,7 +16,7 @@ class Candidat{
 	private $_lieu_naissance;
 	private $_numSecuriteSociale;
 	private $_cleSecuriteSociale;
-	private $_demande;
+	private $_cleDar;
 	private $_typeRecrutement;
 	private $_dateDebutContrat;
 	private $_societes;
@@ -139,12 +139,12 @@ class Candidat{
 		$this->_cleSecuriteSociale = $_clesecuritesociale;
 	}
 	
-	public function get_demande(){
-		return $this->_demande;
+	public function get_cleDar(){
+		return $this->_cleDar;
 	}
 
-	public function set_demande($_demande){
-		$this->_demande = $_demande;
+	public function set_cleDar($cle_dar){
+		$this->_cleDar = $cle_dar;
 	}
 
 	public function get_type_recrutement(){
@@ -210,7 +210,7 @@ class Candidat{
 	public function set_poste($_poste){
 		$this->_poste = $_poste;
 	}
-
+	
 	public static function findById($idCandidat) {
 		
 		try{
@@ -270,7 +270,7 @@ class Candidat{
 		$candidat->set_lieu_naissance($data[0]->t01_21_lieu_naissance);
 		$candidat->set_num_securite_sociale($data[0]->t01_23_num_securite_sociale);
 		$candidat->set_clesecuritesociale($data[0]->t01clesecuritesociale);
-		$candidat->set_demande($data[0]->demande);
+		$candidat->set_cleDar($data[0]->demande);
 		$candidat->set_type_recrutement($data[0]->t01_24_type_recrutement);
 		$candidat->set_dateDebutContrat($data[0]->t01_30_date_debut_contrat);
 		$candidat->set_societes($data[0]->cs00societes);

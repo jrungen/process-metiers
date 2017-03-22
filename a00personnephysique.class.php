@@ -61,7 +61,7 @@ class PersonnePhysique {
 	function PersonnePhysique ($candidat){
 		$this->_cle = PersonnePhysique::generateKey();
 		
-		if (is_null($candidat)){
+		if (!is_null($candidat)){
 			$this->_civilite = $candidat->get_civilite();
 			$this->_nom = $candidat->get_nom();
 			$this->_prenom = $candidat->get_prenom();
@@ -87,11 +87,12 @@ class PersonnePhysique {
 			
 			// Pour un candidat le rôle tiers est systématiquement salarié.
 			$this->_roleTiers = RolesTiers::SALARIE;
+			
 		}else{
 			//TODO Création directe de Personne physique.
 		}
 	}
-
+	
 	public function get_cle(){
 		return $this->_cle;
 	}
@@ -103,7 +104,6 @@ class PersonnePhysique {
 	public function set_roleTiers($_roleTiers){	
 		$this->_roleTiers = $_roleTiers;
 	}
-
 
 	public function get_civilite(){
 		return $this->_civilite;
@@ -257,28 +257,40 @@ class PersonnePhysique {
 	 * Création de la personne physique en base.
 	 */
 	public function create(){
-	try{
-
-		// Requete INSERT INTO
-		$query = "INSERT INTO
-				a00personnephysique
-				(cle, r04roletiers, r03typemouvement, a00civilite, a00nom, a00prenom, a00adresse, a00complement, a00codepostal, a00ville,
-				a00nationalite, a00datenaissance, a00departementnaissance, a00lieunaissance, a00numerosecu,a00clesecu, a00actif,
-				creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
-				values
-				('".$this->_cle."',  '".RolesTiers::SALARIE."',  '".TypeMvmt::ARRIVEE."', '".$this->_civilite."', '".$this->_nom."', '".$this->_prenom."','".$this->_adresse."','".$this->_complement."','".$this->_codepostal."','".$this->_ville."','".$this->_nationalite."','".$this->_datenaissance."','".$this->_departementNaissance."','".$this->_lieuNaissance."','".$this->_numSecuriteSociale."','".$this->_clesecu."', 'Oui', 'candidat', CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME() )
-				";
-
-		// on va chercher tous les enregistrements de la requ?te
-		$result=Script::$db->prepare($query); 
-		$result->execute();
+		try{
+	
+			// Requete INSERT INTO
+			$query = "INSERT INTO
+					a00personnephysique
+					(cle, r04roletiers, r03typemouvement, a00civilite, a00nom, a00prenom, a00adresse, a00complement, a00codepostal, a00ville,
+					a00nationalite, a00datenaissance, a00departementnaissance, a00lieunaissance, a00numerosecu,a00clesecu, a00actif,
+					creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, candidat)
+					values
+					('".$this->_cle."',  '".RolesTiers::SALARIE."',  '".TypeMvmt::ARRIVEE."', '".$this->_civilite."', '".$this->_nom."', '".$this->_prenom."','".$this->_adresse."','".$this->_complement."','".$this->_codepostal."','".$this->_ville."','".$this->_nationalite."','".$this->_datenaissance."','".$this->_departementNaissance."','".$this->_lieuNaissance."','".$this->_numSecuriteSociale."','".$this->_clesecu."', 'Oui', 'candidat', CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME(), '".$this->_candidat->get_cle()."' )
+					";
+	
+			// on va chercher tous les enregistrements de la requ?te
+			$result=Script::$db->prepare($query); 
+			$result->execute();
+			}
+			catch(PDOException  $e){
+				$errMsg = $e->getMessage();
+				echo $errMsg;
+			}
+		postCreate();
 	}
-	catch(PDOException  $e){
-		$errMsg = $e->getMessage();
-		echo $errMsg;
+	
+	private function postCreate(){
+		if (!is_null($this->_candidat)){
+			$this->valideRecrutementPAP();
+		}
 	}
-	/*-----------------------------------*/
-
+	
+	/**
+	 * Requete pour mettre à jour le statut du PAP (validation du recrutement)
+	 */
+	public function valideRecrutementPAP(){
+		Pap::valideRecrutement($this);
 	}
 	
 }
