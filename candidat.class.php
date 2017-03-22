@@ -25,6 +25,15 @@ class Candidat{
 	private $_dateFinContrat;
 	private $_direction;
 	private $_poste;
+	private $_detailMouvement;
+	
+	public function get_detailMouvement(){
+		return $this->_detailMouvement;
+	}
+	
+	public function set_detailMouvement($_detailMouvement){
+		$this->_detailMouvement = $_detailMouvement;
+	}
 	
 	public function get_civilite(){
 		return $this->_civilite;
@@ -146,11 +155,11 @@ class Candidat{
 		$this->_typeRecrutement = $_type_recrutement;
 	}
 
-	public function get_date_debut_contrat(){
+	public function get_dateDebutContrat(){
 		return $this->_dateDebutContrat;
 	}
 
-	public function set_date_debut_contrat($_date_debut_contrat){
+	public function set_dateDebutContrat($_date_debut_contrat){
 		$this->_dateDebutContrat = $_date_debut_contrat;
 	}
 
@@ -205,7 +214,6 @@ class Candidat{
 	public static function findById($idCandidat) {
 		
 		try{
-			// Creation de la requ?te
 			$query = "SELECT
 						t01_03_civilite_candidat,
 						t01_01_nom_candidat,
@@ -228,7 +236,8 @@ class Candidat{
 						t01_19_nb_jours_rtt_monetises,
 						t01_31_date_fin_contrat,
 						cs00direction,
-						t01_32_poste
+						t01_32_poste,
+						r32detailmouvement
 					FROM candidat WHERE idcandidat = '".$idCandidat."'";
 
 			// on va chercher tous les enregistrements de la requ?te
@@ -263,14 +272,14 @@ class Candidat{
 		$candidat->set_clesecuritesociale($data[0]->t01clesecuritesociale);
 		$candidat->set_demande($data[0]->demande);
 		$candidat->set_type_recrutement($data[0]->t01_24_type_recrutement);
-		$candidat->set_date_debut_contrat($data[0]->t01_30_date_debut_contrat);
+		$candidat->set_dateDebutContrat($data[0]->t01_30_date_debut_contrat);
 		$candidat->set_societes($data[0]->cs00societes);
 		$candidat->set_typecontratGRE($data[0]->t01typecontratGRE);
 		$candidat->set_nbJoursRttMonetises($data[0]->t01_19_nb_jours_rtt_monetises);
 		$candidat->set_date_fin_contrat($data[0]->t01_31_date_fin_contrat);
 		$candidat->set_direction($data[0]->cs00direction);
 		$candidat->set_poste($data[0]->t01_32_poste);
-
+		$candidat->set_detailMouvement($data[0]->r32detailmouvement);
 		return $candidat;
 
 	}

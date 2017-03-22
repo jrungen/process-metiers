@@ -2,8 +2,9 @@
 // liste
 // r03typemouvement = Types mouvement
 class TypeMvmt {
-	const ENTREE = 'TM001';
-	const SORTIE = 'TM002';
+	const ARRIVEE = 'TM001';
+	const DEPART = 'TM002';
+	const AVENANT = 'TM003';
 }
 
 ?>
