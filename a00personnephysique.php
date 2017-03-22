@@ -7,7 +7,12 @@ include dirname(dirname(dirname(__FILE__))).'/asset/class/candidat.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/a00personnephysique.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/r16statutpap.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/TacheHelper.class.php';
+include dirname(dirname(dirname(__FILE__))).'/asset/class/Mvmt.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDRH.class.php';
+include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDRI.class.php';
+include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDSI.class.php';
+include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtManager.class.php';
+include dirname(dirname(dirname(__FILE__))).'/asset/class/demande.class.php';
 
 // Création fiche PP manuellement
 if($_REQUEST['mode']=='getKey'){
@@ -34,8 +39,8 @@ function createPpAndMvmt(){
 	$personnePhysique = new PersonnePhysique($candidat);
 	$personnePhysique->create();
 	
-	// récupérer le référentiel des tâches
-	$data_r02listetaches = TacheHelper::get_refTaches($personnePhysique.get_roleTiers(),'.TypeMvmt::ENTREE.');
+	// récupérer le référentiel des tâches pour savoir quel sont les tâches à créer.
+	$data_r02listetaches = TacheHelper::get_refTaches($personnePhysique->get_roleTiers(),TypeMvmt::ARRIVEE);
 		
 	// Requete demande (DAR)
 	try{
@@ -71,24 +76,19 @@ function createPpAndMvmt(){
 	$update_pap->execute();
 	/*-----------------------------------*/
 	
-	$personnePhysique->set_departementnaissance('');
 	
 	/*
 	 * Création mouvement DRH
 	 */
-	try{
-		
-		$mvmtDrhEntree = new MvmtDRH($personnePhysique,TypeMvmt::ENTREE);
+	$mvmtDrhEntree = new MvmtDRH($personnePhysique,TypeMvmt::ARRIVEE);
+	$mvmtDrhEntree->create();
 	
-		// Sortie si <> CDI
-		if ($candidat->get_typecontratGRE() !== 'CTT001'){
-			$mvmtDrhSortie = new MvmtDRH($personnePhysique,TypeMvmt::SORTIE);
-		}
+	// Sortie si <> CDI
+	if ($candidat->get_typecontratGRE() !== 'CTT001'){
+			$mvmtDrhSortie = new MvmtDRH($personnePhysique,TypeMvmt::DEPART);
+			$mvmtDrhSortie->create();
 	}
-	catch(PDOException  $e){
-		$errMsg = $e->getMessage();
-		echo $errMsg;
-	}
+	
 	/*-----------------------------------*/
 	
 	/*
@@ -133,75 +133,29 @@ function createPpAndMvmt(){
 	}
 	/* A SUPPRIMER */
 	
+	
 	/*-----------------------------------*/
+	
 	/*
 	 * Création mouvement DRI
 	 */
-	try{
+	$mvmtDriEntree = new MvmtDRI($mvmtDrhEntree);
+	$mvmtDriEntree->create();
 	
-		// Requete INSERT INTO
-		$query = "INSERT INTO
-					a02entreessortiesdri
-						(cle, a00personnephysique, a05typemouvement,
-					a02societe, a02direction, a02superieurhierarchique,
-					a02poste, a02personneremplacee, a02typecontrat,
-					creation_par, date_creation, heure_creation, modification_par,
-					date_modification, heure_modification)
-					values
-					('".$mvt_cle."_dri', '".$personnePhysique->get_cle()."', '".$mvt_cle."',
-					'".$candidat->get_societes()."', '".$candidat->get_direction()."', '".$data_demande[0]->dar_superieur."',
-					'".$candidat->get_poste()."', '".$data_demande[0]->dar_remplace."', '".$candidat->get_typecontratGRE()."',
-					'candidat', CURDATE(), CURTIME(), 'candidat',
-					CURDATE(),  CURTIME()  )
-					";
-	
-		// on va chercher tous les enregistrements de la requ?te
-		$result=Script::$db->prepare($query);
-		$result->execute();
-	
-	}
-	catch(PDOException  $e){
-		$errMsg = $e->getMessage();
-		echo $errMsg;
-	}
-	/*-----------------------------------*/
 	
 	/*
 	 * Création mouvement DSI
 	 */
-	try{
+	$mvmtDsiEntree = new MvmtDSI($mvmtDrhEntree);
+	$mvmtDsiEntree->create();
 	
-		// Requete INSERT INTO
-		$query = "INSERT INTO
-					a03entreessortiesdsi
-						(cle, a00personnephysique, a05typemouvement,
-						a03societe, a03direction, a03superieurhierarchique,
-						a03poste, a03personneremplacee,
-						creation_par, date_creation, heure_creation, modification_par,
-						date_modification, heure_modification )
-					values
-					('".$mvt_cle."_dsi', '".$personnePhysique->get_cle()."', '".$mvt_cle."',
-					'".$candidat->get_societes()."', '".$candidat->get_direction()."', '".$data_demande[0]->dar_superieur."',
-					'".$candidat->get_poste()."', '".$data_demande[0]->dar_remplace."',
-					'candidat', CURDATE(),CURTIME(), 'candidat',
-					CURDATE(), CURTIME() )
-					";
-	
-		// on va chercher tous les enregistrements de la requ?te
-		$result=Script::$db->prepare($query);
-		$result->execute();
-	
-	}
-	catch(PDOException  $e){
-		$errMsg = $e->getMessage();
-		echo $errMsg;
-	}
 	/*-----------------------------------*/
 	
 	
 	/*
 	 * Création tâches
 	 */
+	echo '-> Création tâches='.sizeof($data_r02listetaches);
 	try{
 	
 		$i = 1;
@@ -233,7 +187,7 @@ function createPpAndMvmt(){
 	
 				$query = "	INSERT INTO a04taches
 							( cle, r02listetaches, a04statuttache, a00personnephysique, utilisateur, r01allocationtache, ".$entreesortie." , creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
-							values ('".$tache_cle."','".$r02listetache->cle."', 'Non Traité','".$personnePhysique->get_cle()."','".$r02listetache->utilisateur."','".$r02listetache->r01allocationtache."','".$mvt_cle."', 'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
+							values ('".$tache_cle."','".$r02listetache->cle."', 'Non Traité','".$personnePhysique->get_cle()."','".$r02listetache->utilisateur."','".$r02listetache->r01allocationtache."','".$mvmtDrhEntree->get_cle()."', 'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
 							";
 			}
 				
@@ -250,7 +204,7 @@ function createPpAndMvmt(){
 	
 				$query = "	INSERT INTO a04taches
 							( cle, r02listetaches, a04statuttache, a00personnephysique, a05typemouvement, utilisateur, r01allocationtache, ".$entreesortie." , creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
-							values ('".$tache_cle."','".$r02listetache->cle."', 'Non Traité','".$personnePhysique->get_cle()."','".$mvt_cle."','".$r02listetache->utilisateur."','".$r02listetache->r01allocationtache."','".$mvt_cle."_".$allocation."', 'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
+							values ('".$tache_cle."','".$r02listetache->cle."', 'Non Traité','".$personnePhysique->get_cle()."','".$mvmtDrhEntree->get_cle()."','".$r02listetache->utilisateur."','".$r02listetache->r01allocationtache."','".$mvmtDrhEntree->get_cle()."_".$allocation."', 'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
 							";
 			}
 			// on va chercher tous les enregistrements de la requ?te
@@ -495,3 +449,5 @@ date_modification, heure_modification)
 	/*-----------------------------------*/
 	
 }
+
+?>

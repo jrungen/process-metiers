@@ -7,7 +7,6 @@
 class PersonnePhysique {
 	private $_cle;
 	private $_roleTiers;
-	private $_typeMouvement;
 	private $_civilite;
 	private $_nom;
 	private $_prenom;
@@ -23,8 +22,15 @@ class PersonnePhysique {
 	private $_clesecu;
 	private $_actif;
 	private $_candidat;
+	private $_typeContrat;
+	private $_materielInformatique;
+	private $_bureau;
+	private $_adresseMessagerie;
 
-	private static function generateKey(){ 
+	/**
+	 * Génére clé personne physique
+	 */
+	public static function generateKey(){ 
 		/*
 		 * DEBUT - Nouveau numéro
 		 */
@@ -48,39 +54,42 @@ class PersonnePhysique {
 		
 	}
 
+	/**
+	 * Création d'une personne physique à partir du candidat.
+	 * @param unknown $candidat
+	 */
 	function PersonnePhysique ($candidat){
-		/* Générer clé personne physique */
-		$getLastKey = Script::$db->prepare("SELECT cle FROM a00personnephysique ORDER BY cle DESC LIMIT 1");
-		$getLastKey->execute();
-		$lastKey = $getLastKey->fetchColumn();
-		$getLastKey->closeCursor();
-
-		if($lastKey === FALSE)
-		{
-		$lastNumber = "AC00000001";
-		}
-
-		$lastNumber = (int) substr($lastKey, 2); // retire "AC", il reste : [compteur] , qui est une valeur numérique
-		$lastNumber = $lastNumber+1;
-		$lastNumber = str_pad($lastNumber,8,'0',STR_PAD_LEFT);
-		$personnephysique_cle = 'AC'.$lastNumber;
-		/**********************************/		
+		$this->_cle = PersonnePhysique::generateKey();
 		
-		$this->_civilite = $candidat->get_civilite();
-		$this->_nom = $candidat->get_nom();
-		$this->_prenom = $candidat->get_prenom();
-		$this->_adresse = $candidat->get_adresse();
-		$this->_complement = $candidat->get_complement();
-		$this->_codepostal = $candidat->get_codepostal();
-		$this->_ville = $candidat->get_ville();
-		$this->_nationalite = $candidat->get_nationalite();
-		$this->_datenaissance = $candidat->get_date_naissance();
-		$this->_departementNaissance = $candidat->get_departementnaissance();
-		$this->_lieuNaissance = $candidat->get_lieu_naissance();
-		$this->_numSecuriteSociale = $candidat->get_num_securite_sociale();
-		$this->_clesecu = $candidat->get_clesecuritesociale();
-		$this->_cle = $personnephysique_cle;
-		$this->_candidat = $candidat;
+		if (is_null($candidat)){
+			$this->_civilite = $candidat->get_civilite();
+			$this->_nom = $candidat->get_nom();
+			$this->_prenom = $candidat->get_prenom();
+			$this->_adresse = $candidat->get_adresse();
+			$this->_complement = $candidat->get_complement();
+			$this->_codepostal = $candidat->get_codepostal();
+			$this->_ville = $candidat->get_ville();
+			$this->_nationalite = $candidat->get_nationalite();
+			$this->_datenaissance = $candidat->get_date_naissance();
+			$this->_departementNaissance = $candidat->get_departementnaissance();
+			$this->_lieuNaissance = $candidat->get_lieu_naissance();
+			$this->_numSecuriteSociale = $candidat->get_num_securite_sociale();
+			$this->_clesecu = $candidat->get_clesecuritesociale();
+			$this->_typeContrat = $candidat->get_typecontratGRE();
+			
+			// Depuis Candidat seléctioné, valeurs par defauts.
+			$this->_materielInformatique = true;
+			$this->_bureau = true;
+			$this->_adresseMessagerie =true;
+			
+			//On stock le candidat dans la personne physique pour accéder aux champs du candidat.
+			$this->_candidat = $candidat;
+			
+			// Pour un candidat le rôle tiers est systématiquement salarié.
+			$this->_roleTiers = RolesTiers::SALARIE;
+		}else{
+			//TODO Création directe de Personne physique.
+		}
 	}
 
 	public function get_cle(){
@@ -95,13 +104,6 @@ class PersonnePhysique {
 		$this->_roleTiers = $_roleTiers;
 	}
 
-	public function get_typeMouvement(){
-		return $this->_typeMouvement;
-	}
-
-	public function set_typeMouvement($_typeMouvement){
-		$this->_typeMouvement = $_typeMouvement;
-	}
 
 	public function get_civilite(){
 		return $this->_civilite;
@@ -192,11 +194,11 @@ class PersonnePhysique {
 	}
 
 	public function get_numerosecu(){
-		return $this->$_numSecuriteSociale;
+		return $this->_numSecuriteSociale;
 	}
 
 	public function set_numerosecu($_numerosecu){
-		$this->$_numSecuriteSociale = $_numerosecu;
+		$this->_numSecuriteSociale = $_numerosecu;
 	}
 
 	public function get_clesecu(){
@@ -219,6 +221,38 @@ class PersonnePhysique {
 		return $this->_candidat;
 	}
 	
+	public function get_typeContrat(){
+		return $this->_typeContrat;
+	}
+	
+	public function set_typeContrat($_typeContrat){
+		$this->_typeContrat = $_typeContrat;
+	}
+	
+	public function get_materielInformatique(){
+		return $this->_materielInformatique;
+	}
+	
+	public function set_materielInformatique($_materielInformatique){
+		$this->_materielInformatique = $_materielInformatique;
+	}
+	
+	public function get_bureau(){
+		return $this->_bureau;
+	}
+	
+	public function set_bureau($_bureau){
+		$this->_bureau = $_bureau;
+	}
+	
+	public function get_adresseMessagerie(){
+		return $this->_adresseMessagerie;
+	}
+	
+	public function set_adresseMessagerie($_adresseMessagerie){
+		$this->_adresseMessagerie = $_adresseMessagerie;
+	}
+	
 	/**
 	 * Création de la personne physique en base.
 	 */
@@ -232,7 +266,7 @@ class PersonnePhysique {
 				a00nationalite, a00datenaissance, a00departementnaissance, a00lieunaissance, a00numerosecu,a00clesecu, a00actif,
 				creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
 				values
-				('".$this->_cle."',  '".Roles::SALARIE."',  '".TypeMvmt::ENTREE."', '".$this->_civilite."', '".$this->_nom."', '".$this->_prenom."','".$this->_adresse."','".$this->_complement."','".$this->_codepostal."','".$this->_ville."','".$this->_nationalite."','".$this->_datenaissance."','".$this->_departementNaissance."','".$this->_lieuNaissance."','".$this->$_numSecuriteSociale."','".$this->_clesecu."', 'Oui', 'candidat', CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME() )
+				('".$this->_cle."',  '".RolesTiers::SALARIE."',  '".TypeMvmt::ARRIVEE."', '".$this->_civilite."', '".$this->_nom."', '".$this->_prenom."','".$this->_adresse."','".$this->_complement."','".$this->_codepostal."','".$this->_ville."','".$this->_nationalite."','".$this->_datenaissance."','".$this->_departementNaissance."','".$this->_lieuNaissance."','".$this->_numSecuriteSociale."','".$this->_clesecu."', 'Oui', 'candidat', CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME() )
 				";
 
 		// on va chercher tous les enregistrements de la requ?te
