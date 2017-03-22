@@ -13,28 +13,28 @@ class Dar{
 	public function get_clePap(){
 		return $this->_clePap;
 	}
-	
+
 	public function set_clePap($_clePap){
 		$this->_clePap = $_clePap;
 	}
-	
+
 	public function get_nomManager(){
 		return $this->_nomManager;
 	}
-	
+
 	public function set_nomManager($_nomManager){
 		$this->_nomManager = $_nomManager;
 	}
-	
+
 	public function get_personneRemplacee(){
 		return $this->_personneRemplacee;
 	}
-	
+
 	public function set_personneRemplacee($_personneRemplacee){
 		$this->_personneRemplacee = $_personneRemplacee;
 	}
 
-	public static function findById($idDar) {
+	public static function findById($cleDar) {
 
 		try{
 			$query = "SELECT
@@ -42,7 +42,7 @@ class Dar{
 						demande.d00nommanager as dar_superieur,
 						demande.d00personneremplacee as dar_remplace
 					FROM demande
-					where cle = '".$idDar."';";
+					where cle = '".$cleDar."';";
 
 			// on va chercher tous les enregistrements de la requ?te
 			$result=Script::$db->prepare($query);
