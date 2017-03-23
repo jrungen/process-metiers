@@ -27,6 +27,7 @@ class Candidat{
 	private $_poste;
 	private $_detailMouvement;
 	private $_cle;
+	private $_nomManager;
 	
 	public function get_detailMouvement(){
 		return $this->_detailMouvement;
@@ -220,6 +221,14 @@ class Candidat{
 		$this->_cle = $_cle;
 	}
 	
+	public function get_nomManager(){
+		return $this->_nomManager;
+	}
+	
+	public function set_nomManager($_nomManager){
+		$this->_nomManager = $_nomManager;
+	}
+	
 	public static function findById($idCandidat) {
 		
 		try{
@@ -247,10 +256,11 @@ class Candidat{
 						cs00direction,
 						t01_32_poste,
 						r32detailmouvement,
-						cle
+						cle,
+						cs00superieurhierarchique
 					FROM candidat WHERE idcandidat = '".$idCandidat."'";
 
-			// on va chercher tous les enregistrements de la requ?te
+			// on va chercher tous les enregistrements de la requête
 			$result=Script::$db->prepare($query); 
 			$result->execute();
 
@@ -291,6 +301,7 @@ class Candidat{
 		$candidat->set_poste($data[0]->t01_32_poste);
 		$candidat->set_detailMouvement($data[0]->r32detailmouvement);
 		$candidat->set_cle($data[0]->cle);
+		$candidat->set_nomManager($data[0]->cs00superieurhierarchique);
 		return $candidat;
 
 	}

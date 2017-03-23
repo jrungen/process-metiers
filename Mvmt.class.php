@@ -6,14 +6,33 @@
  */
 abstract class Mvmt {
 	
-	private $_cle;
-	private $_dateEffet;
-	private $_personnePhysique;
-	private $_roleTiers;
-	private $_typeMouvement;
-	private $_detailMouvement;
-	private $_societes;
+	protected $_cle;
+	protected $_dateEffet;
+	protected $_personnePhysique;
+	protected $_roleTiers;
+	protected $_typeMouvement;
+	protected $_detailMouvement;
+	protected $_societes;
+	protected $_mvmtParent;
+	protected $_direction;
+	protected $_nomManager;
+	protected $_personneRemplacee;
 	
+	public function get_nomManager(){
+		return $this->_nomManager;
+	}
+	
+	public function set_nomManager($_nomManager){
+		$this->_nomManager = $_nomManager;
+	}
+	
+	public function get_personneRemplacee(){
+		return $this->_personneRemplacee;
+	}
+	
+	public function set_personneRemplacee($_personneRemplacee){
+		$this->_personneRemplacee = $_personneRemplacee;
+	}
 	
 	public function get_cle(){
 		return $this->_cle;

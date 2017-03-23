@@ -44,7 +44,8 @@ class MvmtDRH extends Mvmt{
 		$this->_cochSituationCourant = 'Oui';
 		$this->_typeMouvement = $typeMvmt;
 		
-		$this->_role = $this->_personnePhysique->get_roleTiers();
+		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
+		$this->_nomManager = $this->_personnePhysique->get_nomManager();
 	}
 	
 	public static function generateKey(){
@@ -76,11 +77,22 @@ class MvmtDRH extends Mvmt{
 		try{
 			$query = "INSERT INTO
 						a05typemouvement
-					(cle, a05dateeffet, a05cochsituationcourant, a00personnephysique, r03typemouvement, r00societes, r04roletiers, creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, a05typecontrat, a05rttmonetises)
-					values
-					('".$this->_cle."', '".$this->_dateEffet."', 'Oui', '".$this->_personnePhysique->get_cle()."', '".$this->_typeMouvement."', '".$this->_societes."', '".$this->_role."', 'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(), CURTIME(), '".$this->_typeContrat."', '".$this->_rttMonetises."');";
+					(cle, a05dateeffet, a05cochsituationcourant, a00personnephysique, r03typemouvement, r00societes, r04roletiers, creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, a05typecontrat, a05rttmonetises, a05superieurhierarchique)
+					values	(
+						'".$this->_cle."', '".$this->_dateEffet."',
+						'".$this->_cochSituationCourant."',
+						'".$this->_personnePhysique->get_cle()."',
+						'".$this->_typeMouvement."',
+						'".$this->_societes."',
+						'".$this->_roleTiers."',
+						'".$this->_personnePhysique->get_source()."',
+						CURDATE(),CURTIME(), 'candidat', CURDATE(), CURTIME(),
+						'".$this->_typeContrat."',
+						'".$this->_rttMonetises."',
+						'".$this->_nomManager."'
+					);";
 		
-			// on va chercher tous les enregistrements de la requ?te
+			// on va chercher tous les enregistrements de la requête
 			$result=Script::$db->prepare($query);
 			$result->execute();
 			
@@ -99,7 +111,14 @@ class MvmtDRH extends Mvmt{
 	}
 	
 	protected function postCreate(){
-		MvmtManager::getInstance($this)->listActions();
+		$mvmtDriEntree = new MvmtDRI($this);
+		$mvmtDriEntree->create();
+		
+		$mvmtDsiEntree = new MvmtDSI($this);
+		$mvmtDsiEntree->create();
+		
+		$mvmtManager = new MvmtManager($this);
+		$mvmtManager->listActions();
 	}
 }
 

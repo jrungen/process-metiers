@@ -105,22 +105,6 @@ function createPpAndMvmt(){
 	/*-----------------------------------*/
 	
 	/*
-	 * Création mouvement DRI
-	 */
-	$mvmtDriEntree = new MvmtDRI($mvmtDrhEntree);
-	$mvmtDriEntree->create();
-	
-	
-	/*
-	 * Création mouvement DSI
-	 */
-	$mvmtDsiEntree = new MvmtDSI($mvmtDrhEntree);
-	$mvmtDsiEntree->create();
-	
-	/*-----------------------------------*/
-	
-	
-	/*
 	 * Création tâches
 	 */
 	echo '-> Création tâches='.sizeof($data_r02listetaches);

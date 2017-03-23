@@ -15,10 +15,9 @@ class MvmtManager {
 	private $_materielInformatique;
 	private $_bureau;
 	private $_adresseMessagerie;
-	private $_liste_action;
+	private $_data_regles;
 	
-
-	public static function getInstance($mvmt){
+	public function MvmtManager ($mvmt){
 		$pp = $mvmt->get_personnePhysique();
 		$candidat = $pp->get_candidat();
 		
@@ -27,7 +26,6 @@ class MvmtManager {
 		}else{
 			$this->_source = 'Candidat'; // candidat seletioné
 		}
-		
 		$this->_typeMouvement = $mvmt->get_typeMouvement();
 		$this->_detailMouvement = $mvmt->get_detailMouvement();
 		$this->_roleTiers = $mvmt->get_roleTiers();
@@ -35,34 +33,29 @@ class MvmtManager {
 		$this->_materielInformatique = $mvmt->get_personnePhysique()->get_materielInformatique();
 		$this->_bureau = $mvmt->get_personnePhysique()->get_bureau();
 		$this->_adresseMessagerie = $mvmt->get_personnePhysique()->get_adresseMessagerie();
-		
-		return new MvmtManager();
+		$this->load_rules();
 	}
 	
-	public function MvmtManager(){
-		MvmtManager::load_rules();
-	}
-	
-	private static function load_rules() {
+	private function load_rules() {
 		try{
 	
-			$query = "SELECT action, 
-					FROM regles_mouvements 
-					where source='.$this->_source.' 
-					and mouvement='.$this->_typeMouvement.' and detail_mouvement='.$this->_detailMouvement.' 
-					and role='.$this->_roleTiers.'
-					and typecontrat='.$this->_typeContrat.'
-					and materielinformatique='.$this->_materielInformatique.'
-					and bureau='.$this->_bureau.'
-					and adresse_messagerie='.$this->_adresseMessagerie.'
+			$query = "SELECT action 
+					FROM regle_mouvement 
+					where source='".$this->_source."' 
+					and mouvement='".$this->_typeMouvement."' and detail_mouvement='".$this->_detailMouvement."' 
+					and role='".$this->_roleTiers."'
+					and typecontrat='".$this->_typeContrat."'
+					and materielinformatique='".$this->_materielInformatique."'
+					and bureau='".$this->_bureau."'
+					and adresse_messagerie='".$this->_adresseMessagerie."';
 					";
-				
+			
 			// on va chercher tous les enregistrements de la requête
 			$result=Script::$db->prepare($query);
 			$result->execute();
 	
 			// on dit qu'on veut que le résultat soit récupérable sous forme de tableau
-			$this->_liste_action = $result->fetchAll((PDO::FETCH_OBJ));
+			$this->_data_regles = $result->fetchAll((PDO::FETCH_OBJ));
 	
 			// on ferme le curseur des résultats
 			$result->closeCursor();
@@ -76,9 +69,8 @@ class MvmtManager {
 	}
 	
 	public function listActions(){
-		foreach ($_liste_regles as $regle){
-			$regle->action;
-			echo 'regle à exécuter : '.$regle;
+		foreach ($this->_data_regles as $regle){
+			echo '\naction à exécuter : '.$regle->action;
 		}
 	}
 }

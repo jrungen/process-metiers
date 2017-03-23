@@ -26,6 +26,8 @@ class PersonnePhysique {
 	private $_materielInformatique;
 	private $_bureau;
 	private $_adresseMessagerie;
+	private $_nomManager;
+	private $_source;
 
 	/**
 	 * Génére clé personne physique
@@ -62,6 +64,7 @@ class PersonnePhysique {
 		$this->_cle = PersonnePhysique::generateKey();
 		
 		if (!is_null($candidat)){
+			$this->_source='candidat';
 			$this->_civilite = $candidat->get_civilite();
 			$this->_nom = $candidat->get_nom();
 			$this->_prenom = $candidat->get_prenom();
@@ -89,10 +92,18 @@ class PersonnePhysique {
 			$this->_roleTiers = RolesTiers::SALARIE;
 			
 		}else{
+			$this->_source='personnephysique';
 			//TODO Création directe de Personne physique.
 		}
 	}
 	
+	public function get_source(){
+		return $this->_source;
+	}
+	
+	public function set_source($_source){
+		$this->_source = $_source;
+	}
 	public function get_cle(){
 		return $this->_cle;
 	}
@@ -253,6 +264,14 @@ class PersonnePhysique {
 		$this->_adresseMessagerie = $_adresseMessagerie;
 	}
 	
+	public function get_nomManager(){
+		return $this->_nomManager;
+	}
+	
+	public function set_nomManager($_nomManager){
+		$this->_nomManager = $_nomManager;
+	}
+	
 	/**
 	 * Création de la personne physique en base.
 	 */
@@ -264,10 +283,31 @@ class PersonnePhysique {
 					a00personnephysique
 					(cle, r04roletiers, r03typemouvement, a00civilite, a00nom, a00prenom, a00adresse, a00complement, a00codepostal, a00ville,
 					a00nationalite, a00datenaissance, a00departementnaissance, a00lieunaissance, a00numerosecu,a00clesecu, a00actif,
-					creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, candidat)
+					creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, candidat, a00typecontrat, a00superieurhierarchique)
 					values
-					('".$this->_cle."',  '".RolesTiers::SALARIE."',  '".TypeMvmt::ARRIVEE."', '".$this->_civilite."', '".$this->_nom."', '".$this->_prenom."','".$this->_adresse."','".$this->_complement."','".$this->_codepostal."','".$this->_ville."','".$this->_nationalite."','".$this->_datenaissance."','".$this->_departementNaissance."','".$this->_lieuNaissance."','".$this->_numSecuriteSociale."','".$this->_clesecu."', 'Oui', 'candidat', CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME(), '".$this->_candidat->get_cle()."' )
-					";
+					('".$this->_cle."', 
+							'".RolesTiers::SALARIE."', 
+							'".TypeMvmt::ARRIVEE."',
+							'".$this->_civilite."',
+							'".$this->_nom."',
+							'".$this->_prenom."',
+							'".$this->_adresse."',
+							'".$this->_complement."',
+							'".$this->_codepostal."',
+							'".$this->_ville."',
+							'".$this->_nationalite."',
+							'".$this->_datenaissance."',
+							'".$this->_departementNaissance."',
+							'".$this->_lieuNaissance."',
+							'".$this->_numSecuriteSociale."',
+							'".$this->_clesecu."', 
+							'Oui',
+							'" . $this->_source."',
+							CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME(), 
+							'".$this->_candidat->get_cle()."',
+							'". $this->_typeContrat."',
+							'".$this->_candidat->get_nomManager()."'
+							)";
 	
 			// on va chercher tous les enregistrements de la requ?te
 			$result=Script::$db->prepare($query); 

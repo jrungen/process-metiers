@@ -5,31 +5,27 @@
  * Classe représentant les mouvements DRH qui pointent anormalement sur la table a05typemouvement.
  */
 class MvmtDSI extends Mvmt{
-	private $_mvmtDrh;
-	private $_direction;
-	private $_poste;
 	
-	function MvmtDSI($mvmtDrh, $dar){
-		$this->_mvmtDrh = $mvmtDrh;
+	function MvmtDSI($mvmtDrh){
+		$this->_mvmtParent = $mvmtDrh;
 		$this->_cle = $mvmtDrh->get_cle();
 		$this->_personnePhysique =  $mvmtDrh->get_personnePhysique();
 		
 		//Source Fiche Personne Physique.
-		if (is_null($personnePhysique->get_candidat())) {
+		if (is_null($this->_personnePhysique->get_candidat())) {
 			//TODO 
 		}
 		else{ // Creation depuis candidat.
-			$this->_dateEffet = $this->_personnePhysique->get_candidat()->get_dateDebutContrat();
 			$this->_societes = $this->_personnePhysique->get_candidat()->get_societes();
 			$this->_direction = $this->_personnePhysique->get_candidat()->get_direction();
 			$this->_poste = $this->_personnePhysique->get_candidat()->get_poste();
 			$this->_typeContrat = $this->_personnePhysique->get_candidat()->get_typecontratGRE();
 			$this->_detailMouvement = $this->_personnePhysique->get_candidat()->get_detailMouvement();
+			$dar = Dar::findById($this->_personnePhysique->get_candidat()->get_cleDar());
+			$this->_nomManager = $dar->get_nomManager();
+			$this->_personneRemplacee = $dar->get_personneRemplacee();
 		}
-		$this->_cochSituationCourant = 'Oui';
-		$this->_typeMouvement = $typeMvmt;
-		
-		$this->_roletiers = $this->_personnePhysique->get_roleTiers();
+		$this->_typeMouvement = $this->_mvmtParent->get_typeMouvement();
 	}
 	
 	/**
@@ -46,10 +42,11 @@ class MvmtDSI extends Mvmt{
 						creation_par, date_creation, heure_creation, modification_par,
 						date_modification, heure_modification )
 					values
-					('".$mvmtDrhEntree->get_cle()."_dsi', '".$personnePhysique->get_cle()."', '".$mvmtDrhEntree->get_cle()."',
-					'".$candidat->get_societes()."', '".$candidat->get_direction()."', '".$data_demande[0]->dar_superieur."',
-					'".$candidat->get_poste()."', '".$data_demande[0]->dar_remplace."',
-					'candidat', CURDATE(),CURTIME(), 'candidat',
+					('".$this->_cle."_dsi', '".$this->_personnePhysique->get_cle()."', '".$this->_mvmtParent->get_cle()."',
+					'".$this->_societes."', '".$this->_direction."', '".$this->_mvmtParent->get_nomManager()."',
+					'".$this->_poste."', '".$this->_personneRemplacee."',
+					'".$this->_personnePhysique->get_source()."',
+					CURDATE(),CURTIME(), 'candidat',
 					CURDATE(), CURTIME() )
 					";
 		
