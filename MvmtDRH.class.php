@@ -106,19 +106,11 @@ class MvmtDRH extends Mvmt{
 		$this->postCreate();
 	}
 	
-	
 	protected function preCreate(){
 	}
 	
 	protected function postCreate(){
-		$mvmtDriEntree = new MvmtDRI($this);
-		$mvmtDriEntree->create();
-		
-		$mvmtDsiEntree = new MvmtDSI($this);
-		$mvmtDsiEntree->create();
-		
-		$mvmtManager = new MvmtManager($this);
-		$mvmtManager->listActions();
+		TacheHelper::createTaches($this->_personnePhysique, $this->_typeMouvement);
 	}
 }
 

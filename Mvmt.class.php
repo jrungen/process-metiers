@@ -91,6 +91,13 @@ abstract class Mvmt {
 	}
 	
 	/**
+	 * Création des tâches du mouvement selon le rôle de la pp et le type de mouvement.
+	 */
+	protected function createTaches(){
+		TacheHelper::createTaches($this->personnePhysique, $this->_typeMouvement);
+	}
+	
+	/**
 	 *  Création mouvement en base.
 	 */
 	abstract protected function create();

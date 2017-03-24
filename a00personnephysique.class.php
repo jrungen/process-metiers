@@ -321,9 +321,30 @@ class PersonnePhysique {
 	}
 	
 	private function postCreate(){
+		
+		$mvmtDrhEntree = new MvmtDRH($personnePhysique,TypeMvmt::ARRIVEE);
+		$mvmtDrhEntree->create();
+		
+		// Sortie si <> CDI
+		if ($candidat->get_typecontratGRE() !== 'CTT001'){
+			$mvmtDrhSortie = new MvmtDRH($personnePhysique,TypeMvmt::DEPART);
+			$mvmtDrhSortie->create();
+		}
+
+		$mvmtDriEntree = new MvmtDRI($this);
+		$mvmtDriEntree->create();
+		
+		$mvmtDsiEntree = new MvmtDSI($this);
+		$mvmtDsiEntree->create();
+		
 		if (!is_null($this->_candidat)){
 			$this->valideRecrutementPAP();
 		}
+		
+		//TODO tout les créations de lignes Mvmt et PAP doivent être effectué par le MvmtManager
+		//$mvmtManager = new MvmtManager($this);
+		//$mvmtManager->listActions();
+		
 	}
 	
 	/**
