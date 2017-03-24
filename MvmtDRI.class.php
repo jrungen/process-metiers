@@ -38,14 +38,14 @@ class MvmtDRI extends Mvmt{
 					a02societe, a02direction, a02superieurhierarchique,
 					a02poste, a02personneremplacee, a02typecontrat,
 					creation_par, date_creation, heure_creation, modification_par,
-					date_modification, heure_modification)
+					date_modification, heure_modification, r04roletiers)
 					values
 					('".$this->_cle."_dri', '".$this->_personnePhysique->get_cle()."', '".$this->_mvmtParent->get_cle()."',
 					'".$this->_societes."', '".$this->_direction."', '".$this->_mvmtParent->get_nomManager()."',
 					'".$this->_poste."', '".$this->_personneRemplacee."', '".$this->_typeContrat."',
 					'".$this->_personnePhysique->get_source()."',
 					CURDATE(), CURTIME(), 'candidat',
-					CURDATE(),  CURTIME()  )
+					CURDATE(),  CURTIME(), '".$this->_personnePhysique->get_roleTiers()."' )
 					";
 		
 			// on va chercher tous les enregistrements de la requ?te

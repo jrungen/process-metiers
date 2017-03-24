@@ -40,17 +40,17 @@ class MvmtDSI extends Mvmt{
 						a03societe, a03direction, a03superieurhierarchique,
 						a03poste, a03personneremplacee,
 						creation_par, date_creation, heure_creation, modification_par,
-						date_modification, heure_modification )
+						date_modification, heure_modification, a03role )
 					values
 					('".$this->_cle."_dsi', '".$this->_personnePhysique->get_cle()."', '".$this->_mvmtParent->get_cle()."',
 					'".$this->_societes."', '".$this->_direction."', '".$this->_mvmtParent->get_nomManager()."',
 					'".$this->_poste."', '".$this->_personneRemplacee."',
 					'".$this->_personnePhysique->get_source()."',
 					CURDATE(),CURTIME(), 'candidat',
-					CURDATE(), CURTIME() )
+					CURDATE(), CURTIME(), '".$this->_personnePhysique->get_roleTiers()."' )
 					";
 		
-			// on va chercher tous les enregistrements de la requ?te
+			// on va chercher tous les enregistrements de la requete
 			$result=Script::$db->prepare($query);
 			$result->execute();
 		
