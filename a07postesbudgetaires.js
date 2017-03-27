@@ -1001,8 +1001,7 @@
 		}
 	
 	function onSave_a07postesbudgetaires (){
-
-	var thisComponent = this;
+		var thisComponent = this;
 
 		if (this.isNew()) {
 		

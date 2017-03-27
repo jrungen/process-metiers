@@ -141,6 +141,41 @@ function onLoad_demande () {
 		}
 		return differences;
 	};
+	
+	/***********************************************/
+	//-----------------------------------------------
+	// JR le 27/03/2017
+	// renvoie un objet JSON contenant les valeurs actuelles des champs à surveiller
+	// pour détecter les modifs sur la connexion PAP
+	thisComponent.setValue('pap_initiale',thisComponent.getValue('a07postesbudgetaires'));
+//	thisComponent.getPAP = function () {
+//		return {
+//			a07postesbudgetaires:this.getValue("a07postesbudgetaires")
+//		};
+//	};
+//	
+//	//-----------------------------------------------
+//	// renvoie un tableau JSON avec la liste des différences par rapport à la demande initiale.
+//	// Renvoie un tableau vide [] si aucun changement
+//	thisComponent.getChangementPAP = function () {
+//		var papInitiale = JSON.parse(this.getValue("pap_initiale")),
+//		papActuelle = this.getEtatDemande(),
+//		differences = [],
+//		fieldName
+//		;
+//		for (var fieldName in papInitiale) {
+//			if (papInitiale[fieldName] != papActuelle[fieldName]) {
+//				differences.push({
+//					"name" : fieldName,
+//					"label" : thisComponent.ui.find("[name=" + fieldName + "]").closest(".form-group").find("label span.trn").html(),
+//					"before" : papInitiale[fieldName],
+//					"after" : papActuelle[fieldName]
+//				});
+//			}
+//		}
+//		return differences;
+//	};
+	/***********************************************/
 
 	//-----------------------------------------------
 	// cette fonction se charge aussi de vérifier la case à cocher de confirmation,
@@ -568,7 +603,7 @@ function onLoad_demande () {
 			verifTypeContrat(thisComponent);			
         }
     }, 1000);
-	
+
 	function verifTypeContrat(thisComponent){
 		var motif_recrutement = thisComponent.ui.find('[name=d00motifpap]').val();
 		// console.log(motif_recrutement);
@@ -583,6 +618,7 @@ function onLoad_demande () {
 				}
 			}
 		}
+
 		if(thisComponent.getValue('r06typecontrat')==='CTT002'){
 			masquer_stagiaire(thisComponent);
 			afficher_cdi(thisComponent);
@@ -594,6 +630,7 @@ function onLoad_demande () {
 				}
 			}
 		}
+
 		// Stagiaire / Contrat pro
 		if((thisComponent.getValue('r06typecontrat')!=='CTT002')&&(thisComponent.getValue('r06typecontrat')!=='CTT001')){
 			masquer_cdi(thisComponent);
@@ -603,7 +640,7 @@ function onLoad_demande () {
 		}
 		calcul_duree(thisComponent);
 	}
-	
+
 	/****************************************************************/
 	// JR LE 10/02/2017 NOUVEAU SCRIPT POUR CHAMP MOTIF RECRUTEMENT //
 	/****************************************************************/
@@ -1056,7 +1093,34 @@ function onSave_demande(close) {
 		differences = thisComponent.computeDifferences(),
 		listeModif = ""
 	;
+	/*
+	 * JR le 27/03/2017 Exécution de la fonction
+	 */
+	var papActuel = thisComponent.getValue('a07postesbudgetaires');
+	var papInitiale = thisComponent.getValue('pap_initiale');
+	
+	if (papActuel !== papInitiale) {
+		gopaas.dialog.info("Vous avez fait une modification");
+		/*
+		 * FAIRE un UPDATE ITEM
+		 */
+//		var form = thisComponent.ui.find("form:first");
+//		var formData = form.serializeArray(); // où form est ton formulaire thisComponent.ui.find("form:first")
+/*
+  [{"name":"a07mouvement","value":"MVTPAP001"},{"name":"a07motif","value":"MOTPAP001"},{"name":"creation_par","value":"ccollet"},{"name":"a07typerecrutement","value":"RECRUT001"},{"name":"date_creation","value":"21/03/2017"},{"name":"a07salarieremplace","value":""},{"name":"a07poste","value":"PST00001"},{"name":"a07famillepostedetail","value":"FAMD00001"},{"name":"a07familleposte","value":""},{"name":"a07societe","value":"STE0004"},{"name":"a07localisation","value":"LOC0002"},{"name":"a07typecontrat","value":"CTT005"},{"name":"a07direction","value":"DIR_COV005"},{"name":"a07tauxactivite","value":"50"},{"name":"a07metier","value":"MET0003"},{"name":"a07nbmoispaiement","value":"12"},{"name":"a07salariePAP","value":""},{"name":"a07matriculerefbudget","value":""},{"name":"a07anneepap","value":"2017"},{"name":"a07trimestre","value":"T2"},{"name":"r17budget","value":"BUDG002"},{"name":"r17budget2","value":"BUDG002"},{"name":"a07commentairebudget","value":""},{"name":"a07prevdatearrivee","value":"14/04/2017"},{"name":"a07prevdatedepart","value":""},{"name":"a07prevvariationeffectif","value":"0,5"},{"name":"a07prevsalaireannuelhc","value":"45 000"},{"name":"a07prevetp","value":"0,36"},{"name":"a07prevprimeanneepleinehc","value":"1 000"},{"name":"a07statutpap","value":"STAPAP001"},{"name":"a07commentairesuivi","value":"A3"},{"name":"a07reeldatearrivee","value":""},{"name":"a07reeldatedepart","value":""},{"name":"a07reelvariationeffectif","value":"0,50"},{"name":"a07reelsalaireannuelhc","value":""},{"name":"a07reeletp","value":""},{"name":"a07reelprimeanneepleinehc","value":""},{"name":"a07forecastdatearrivee","value":"14/04/2017"},{"name":"a07forecastdatedepart","value":""},{"name":"a07forecastsalaireannuelbrut","value":""},{"name":"searchlinkedview","value":""},{"name":"a07originerecrutement","value":"ORI001"},{"name":"a07cabinetrecrutement","value":"CAB018"},{"name":"a07tauxfraisrecrutprevisionnel","value":"1 000,00"},{"name":"a07fraisrecrutementprevisionnel","value":"1 000"},{"name":"a07prevmsanneepleinecc","value":"66 600"},{"name":"a07prevmsproratcc","value":"23 976"},{"name":"a07prevecosortiemsproratcc","value":"0"},{"name":"a07prevecosortiemsanneepleinecc","value":"0"},{"name":"a07prevsurcoutecomsproratcc","value":"23 976"},{"name":"a07prevsurcoutecomsanneepleinecc","value":"66 600"},{"name":"a07prevecosortieetp","value":"0,00"},{"name":"a07prevsurcoutecoetp","value":"0,36"},{"name":"a07reelmsanneepleinecc","value":""},{"name":"a07reelmsproratcc","value":""},{"name":"a07reelecosortiemsproratcc","value":""},{"name":"a07reelecosortiemsanneepleinecc","value":""},{"name":"a07reelsurcoutecomsproratcc","value":""},{"name":"a07reelsurcoutecomsanneepleinecc","value":""},{"name":"a07reelecosortieetp","value":""},{"name":"a07reelsurcoutecoetp","value":""},{"name":"a07forecastsurcoutecomsanneepleinecc","value":"66 600"},{"name":"a07forecastsurcoutecomsproratcc","value":"23 976"},{"name":"a07forecastetp","value":"0,36"},{"name":"a07forecastsurcoutecoetp","value":"0,36"},{"name":"a07forecastvariationeffectif","value":"0,50"},{"name":"ida07postesbudgetaires","value":"44"},{"name":"heure_creation","value":"11:50:10"},{"name":"annee","value":""},{"name":"a07matriculesalarieremplace","value":""},{"name":"dar_attribuee","value":"on"},{"name":"cle","value":"PAP0000168"},{"name":"date_modification","value":"27/03/2017"},{"name":"modification_par","value":"jrungen@nids.fr"},{"name":"heure_modification","value":"17:16:36"}]
+ */
+		formData = JSON.parse([{"name":"cle","value":papInitiale},{"name":"dar_attribuee","value":"0"}]);
+		formData.push({ name:"a07postesbudgetaires", value:thisComponent.data.tableName }); // ajoute le nom de la table aux paramètres du formulaire
 
+		$.post( gopaas.url.webservice("item","update-item"), formData )
+		.done(function(updatedItem) {
+		       // lance le callback onSuccess
+		       onSuccess && onSuccess.call(this, updatedItem, close, onSuccess, differences, onFail);
+
+		}).fail(gopaas.dialog.ajaxFail).fail(function() { onFail && onFail.call(thisComponent, close, onSuccess, differences, onFail); });
+	}
+	/************************************************/
+	
 	if (etape === "Brouillon" || etape === "Envoi demande") {
 		thisComponent.setValue("demande_initiale", JSON.stringify(thisComponent.getEtatDemande()));
 	}
