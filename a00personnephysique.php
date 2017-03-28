@@ -14,6 +14,7 @@ include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtDSI.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/MvmtManager.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/demande.class.php';
 include dirname(dirname(dirname(__FILE__))).'/asset/class/a07postesbudgetaires.class.php';
+include dirname(dirname(dirname(__FILE__))).'/asset/class/actionMvmt.class.php';
 
 // Création fiche PP manuellement
 if($_REQUEST['mode']=='getKey'){
@@ -34,7 +35,7 @@ if($_REQUEST['mode']=='createItems'){
  * Création de la personne physique et génération des mouvements.
  */
 function createPpAndMvmt(){
-
+	
 	// récupérer les données du candidat sélectionné
 	$idcandidat = $_REQUEST['idcandidat'];
 	$candidat = Candidat::findById($idcandidat);
@@ -45,7 +46,7 @@ function createPpAndMvmt(){
 }
 
 /**
- * Génération des mouvments de la personne physique. 
+ * Génération des mouvments uniquement de la personne physique. 
  */
 function createPpMvmt(){
 

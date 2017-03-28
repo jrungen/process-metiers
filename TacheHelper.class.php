@@ -21,7 +21,7 @@ class TacheHelper {
 		/*
 		 * Création tâches
 		 */
-		echo '-> Création tâches='.sizeof($data_r02listetaches);
+		echo '-> Création tâches='.sizeof($data_r02listetaches).'\n';
 		try{
 		
 			$i = 1;

@@ -42,7 +42,7 @@ class Pap{
 			$query = "UPDATE a07postesbudgetaires
 				SET a07statutpap = '".StatutPAP::RECRUTEMENT_VALIDE."',
 				a07salariePAP = '".$personnePhysique->get_cle()."',
-				a07originerecrutement = '".$personnePhysique->get_candidat()->get_type_recrutement()."'
+				a07originerecrutement = '".$personnePhysique->get_candidat()->get_typeRecrutement()."'
 				where cle = '".$dar->get_clePap()."';";
 
 			// on va chercher tous les enregistrements de la requete

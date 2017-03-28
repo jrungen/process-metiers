@@ -71,15 +71,15 @@ class PersonnePhysique {
 			$this->_prenom = $candidat->get_prenom();
 			$this->_adresse = $candidat->get_adresse();
 			$this->_complement = $candidat->get_complement();
-			$this->_codepostal = $candidat->get_codepostal();
+			$this->_codepostal = $candidat->get_codePostal();
 			$this->_ville = $candidat->get_ville();
 			$this->_nationalite = $candidat->get_nationalite();
-			$this->_datenaissance = $candidat->get_date_naissance();
-			$this->_departementNaissance = $candidat->get_departementnaissance();
-			$this->_lieuNaissance = $candidat->get_lieu_naissance();
-			$this->_numSecuriteSociale = $candidat->get_num_securite_sociale();
-			$this->_clesecu = $candidat->get_clesecuritesociale();
-			$this->_typeContrat = $candidat->get_typecontratGRE();
+			$this->_datenaissance = $candidat->get_dateNaissance();
+			$this->_departementNaissance = $candidat->get_departementNaissance();
+			$this->_lieuNaissance = $candidat->get_lieuNaissance();
+			$this->_numSecuriteSociale = $candidat->get_numSecuriteSociale();
+			$this->_clesecu = $candidat->get_cleSecuriteSociale();
+			$this->_typeContrat = $candidat->get_typeContratGRE();
 			$this->_detailMouvement = $candidat->get_detailMouvement(); 
 			
 			// Depuis Candidat seléctioné, valeurs par defauts.
@@ -334,7 +334,7 @@ class PersonnePhysique {
 	
 	private function postCreate(){
 		// Dans tout les cas de création de personne physique, on crée un mouvment DRH d'arrivée.
-		$mvmtDrhPp = new MvmtDRH($this->_personnePhysique, TypeMvmt::ARRIVEE);
+		$mvmtDrhPp = new MvmtDRH($this, TypeMvmt::ARRIVEE);
 		$mvmtDrhPp->create();
 		$mvmtManager = new MvmtManager($mvmtDrhPp);
 		$mvmtManager->executeActions();

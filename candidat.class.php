@@ -187,7 +187,7 @@ class Candidat {
 		return $this->_06CarteVitaleC100t0dittdat;
 	}
 
-	public function get_civiliteCandidat(){
+	public function get_civilite(){
 		return $this->_t0103CiviliteCandidat;
 	}
 
@@ -383,20 +383,12 @@ class Candidat {
 		return $this->_cs00nommanager;
 	}
 
-	public function get_nomManager(){
-		return $this->_nomManager;
-	}
-
-	public function get_nationaliteCandidat(){
+	public function get_nationalite(){
 		return $this->_t0122NationaliteCandidat;
 	}
 
 	public function get_typeContratGRE(){
 		return $this->_t01typecontratGRE;
-	}
-
-	public function get_typeContrat(){
-		return $this->_typeContrat;
 	}
 
 	public function get_nom(){
@@ -451,7 +443,7 @@ class Candidat {
 		return $this->_intitulePoste;
 	}
 
-	public function get_prenomCandidat(){
+	public function get_prenom(){
 		return $this->_t0102PrenomCandidat;
 	}
 
@@ -757,10 +749,6 @@ class Candidat {
 
 	public function set_typeContratGRE($t01typecontratGRE){
 		$this->_t01typecontratGRE = $t01typecontratGRE;
-	}
-
-	public function set_typeContrat($typeContrat){
-		$this->_typeContrat = $typeContrat;
 	}
 
 	public function set_nom($t0101NomCandidat){

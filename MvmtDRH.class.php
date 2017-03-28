@@ -38,7 +38,7 @@ class MvmtDRH extends Mvmt{
 			$this->_dateEffet = $this->_personnePhysique->get_candidat()->get_dateDebutContrat();
 			$this->_societes = $this->_personnePhysique->get_candidat()->get_societes();
 			$this->_typeContrat = $this->_personnePhysique->get_candidat()->get_typecontratGRE();
-			$this->_rttMonetises = $this->_personnePhysique->get_candidat()->get_nbJoursRttMonetisess();
+			$this->_rttMonetises = $this->_personnePhysique->get_candidat()->get_nbJoursRttMonetises();
 			$this->_detailMouvement = $this->_personnePhysique->get_candidat()->get_detailMouvement();
 		}
 		$this->_cochSituationCourant = 'Oui';
