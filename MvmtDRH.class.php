@@ -110,7 +110,7 @@ class MvmtDRH extends Mvmt{
 	}
 	
 	protected function postCreate(){
-		TacheHelper::createTaches($this->_personnePhysique, $this->_typeMouvement);
+		TacheHelper::createTaches($this);
 	}
 }
 

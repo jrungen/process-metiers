@@ -10,10 +10,10 @@ class TacheHelper {
 	/**
 	 * Création des tâches du mouvement selon le rôle de la pp et le type de mouvement.
 	 */
-	public static function createTaches($personnePhysique, $typeMouvement){
+	public static function createTaches($mvmt){
 		
 		// récupérer le référentiel des tâches pour savoir quel sont les tâches à créer.
-		$data_r02listetaches = get_refTaches($personnePhysique->get_roleTiers(),$typeMouvement);
+		$data_r02listetaches = TacheHelper::get_refTaches($mvmt->get_personnePhysique()->get_roleTiers(),$mvmt->get_typeMouvement());
 		
 		
 		/*-----------------------------------*/
@@ -52,8 +52,17 @@ class TacheHelper {
 					$allocation = 'drh';
 		
 					$query = "	INSERT INTO a04taches
-							( cle, r02listetaches, a04statuttache, a00personnephysique, utilisateur, r01allocationtache, ".$entreesortie." , creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
-							values ('".$tache_cle."','".$r02listetache->cle."', 'Non Traité','".$personnePhysique->get_cle()."','".$r02listetache->utilisateur."','".$r02listetache->r01allocationtache."','".$mvmtDrhEntree->get_cle()."', 'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
+							( cle, r02listetaches, a04statuttache, a00personnephysique, utilisateur, r01allocationtache,
+							".$entreesortie.",
+							creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
+							values ('".$tache_cle."',
+							'".$r02listetache->cle."',
+							'Non Traité',
+							'".$mvmt->get_personnePhysique()->get_cle()."',
+							'".$r02listetache->utilisateur."',
+							'".$r02listetache->r01allocationtache."',
+							'".$mvmt->get_cle()."',
+							'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
 							";
 				}
 		
@@ -70,10 +79,17 @@ class TacheHelper {
 		
 					$query = "	INSERT INTO a04taches
 							( cle, r02listetaches, a04statuttache, a00personnephysique, a05typemouvement, utilisateur, r01allocationtache, ".$entreesortie." , creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification)
-							values ('".$tache_cle."','".$r02listetache->cle."', 'Non Traité','".$personnePhysique->get_cle()."','".$mvmtDrhEntree->get_cle()."','".$r02listetache->utilisateur."','".$r02listetache->r01allocationtache."','".$mvmtDrhEntree->get_cle()."_".$allocation."', 'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
+							values ('".$tache_cle."',
+							'".$r02listetache->cle."', 'Non Traité',
+							'".$mvmt->get_personnePhysique()->get_cle()."',
+							'".$mvmt->get_cle()."',
+							'".$r02listetache->utilisateur."',
+							'".$r02listetache->r01allocationtache."',
+							'".$mvmt->get_cle()."_".$allocation."',
+							'candidat', CURDATE(),CURTIME(), 'candidat', CURDATE(),  CURTIME() );
 							";
 				}
-				// on va chercher tous les enregistrements de la requ?te
+				// on va chercher tous les enregistrements de la requête
 				$result=Script::$db->prepare($query);
 				$result->execute();
 		
