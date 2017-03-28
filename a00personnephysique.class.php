@@ -28,6 +28,7 @@ class PersonnePhysique {
 	private $_adresseMessagerie;
 	private $_nomManager;
 	private $_source;
+	private $_detailMouvement;
 
 	/**
 	 * Génére clé personne physique
@@ -79,6 +80,7 @@ class PersonnePhysique {
 			$this->_numSecuriteSociale = $candidat->get_num_securite_sociale();
 			$this->_clesecu = $candidat->get_clesecuritesociale();
 			$this->_typeContrat = $candidat->get_typecontratGRE();
+			$this->_detailMouvement = $candidat->get_detailMouvement(); 
 			
 			// Depuis Candidat seléctioné, valeurs par defauts.
 			$this->_materielInformatique = true;
@@ -95,6 +97,14 @@ class PersonnePhysique {
 			$this->_source='personnephysique';
 			//TODO Création directe de Personne physique.
 		}
+	}
+	
+	public function get_detailMouvement(){
+		return $this->_detailMouvement;
+	}
+	
+	public function set_detailMouvement($_detailMouvement){
+		$this->_detailMouvement = $_detailMouvement;
 	}
 	
 	public function get_source(){
@@ -283,7 +293,8 @@ class PersonnePhysique {
 					a00personnephysique
 					(cle, r04roletiers, r03typemouvement, a00civilite, a00nom, a00prenom, a00adresse, a00complement, a00codepostal, a00ville,
 					a00nationalite, a00datenaissance, a00departementnaissance, a00lieunaissance, a00numerosecu,a00clesecu, a00actif,
-					creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, candidat, a00typecontrat, a00superieurhierarchique)
+					creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, candidat,
+					a00typecontrat, a00superieurhierarchique, r32detailmouvement)
 					values
 					('".$this->_cle."', 
 							'".RolesTiers::SALARIE."', 
@@ -306,7 +317,8 @@ class PersonnePhysique {
 							CURDATE(), CURTIME(), 'candidat', CURDATE(), CURTIME(), 
 							'".$this->_candidat->get_cle()."',
 							'". $this->_typeContrat."',
-							'".$this->_candidat->get_nomManager()."'
+							'".$this->_candidat->get_nomManager()."',
+							'".$this->_candidat->get_detailMouvement()."'
 							)";
 	
 			// on va chercher tous les enregistrements de la requ?te
@@ -321,30 +333,11 @@ class PersonnePhysique {
 	}
 	
 	private function postCreate(){
-		
-		$mvmtDrhEntree = new MvmtDRH($personnePhysique,TypeMvmt::ARRIVEE);
-		$mvmtDrhEntree->create();
-		
-		// Sortie si <> CDI
-		if ($candidat->get_typecontratGRE() !== 'CTT001'){
-			$mvmtDrhSortie = new MvmtDRH($personnePhysique,TypeMvmt::DEPART);
-			$mvmtDrhSortie->create();
-		}
-
-		$mvmtDriEntree = new MvmtDRI($this);
-		$mvmtDriEntree->create();
-		
-		$mvmtDsiEntree = new MvmtDSI($this);
-		$mvmtDsiEntree->create();
-		
-		if (!is_null($this->_candidat)){
-			$this->valideRecrutementPAP();
-		}
-		
-		//TODO tout les créations de lignes Mvmt et PAP doivent être effectué par le MvmtManager
-		//$mvmtManager = new MvmtManager($this);
-		//$mvmtManager->listActions();
-		
+		// Dans tout les cas de création de personne physique, on crée un mouvment DRH d'arrivée.
+		$mvmtDrhPp = new MvmtDRH($this->_personnePhysique, TypeMvmt::ARRIVEE);
+		$mvmtDrhPp->create();
+		$mvmtManager = new MvmtManager($mvmtDrhPp);
+		$mvmtManager->executeActions();
 	}
 	
 	/**
@@ -352,6 +345,16 @@ class PersonnePhysique {
 	 */
 	public function valideRecrutementPAP(){
 		Pap::valideRecrutement($this);
+	}
+	
+	function getJsonData(){
+		$var = get_object_vars($this);
+		foreach ($var as &$value) {
+			if (is_object($value) && method_exists($value,'getJsonData')) {
+				$value = $value->getJsonData();
+			}
+		}
+		return $var;
 	}
 	
 }
