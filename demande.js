@@ -34,14 +34,14 @@ function onLoad_demande () {
 					thisComponent.ui.find('.form-horizontal > h3').html('<i class="fa fa-user" style="color:#8E3557;"></i> '+vCartouche2);
 					
 					// 3ème get-item pour sur motif recrutement
-					if (thisComponent.getValue('d00motifrecrutement')){
+					if (thisComponent.getValue('d00motifpap')){
 						$.get("webservice/item/get-item.php", {
-							tableName	: "r11motifentree",
-							itemKey  	: thisComponent.getValue('d00motifrecrutement')
+							tableName	: "r14motifpap",
+							itemKey  	: thisComponent.getValue('d00motifpap')
 						})
 						.done(function(data3){
 						// je récupère l'intitulé du motif recrutement
-							var motif_recrutement = data3.r11libmotifentree;	
+							var motif_recrutement = data3.r14libmotifpap;	
 							
 							var vCartouche3 = gopaas.date.dateFr(thisComponent.getValue('date_demande'))+' '+direction_intitule+' '+code_type_contrat+' '+motif_recrutement;
 							thisComponent.ui.find('.form-horizontal > h3').html('<i class="fa fa-user" style="color:#8E3557;"></i> '+vCartouche3);
@@ -109,7 +109,7 @@ function onLoad_demande () {
 	thisComponent.getEtatDemande = function () {
 		return {
 			r06typecontrat:				this.getValue("r06typecontrat"),
-			d00motifrecrutement:		this.getValue("d00motifrecrutement"),
+			d00motifpap:				this.getValue("d00motifpap"),
 			prevu_dernier_pb_actu:		this.getValue("prevu_dernier_pb_actu"),
 			d00societes:				this.getValue("d00societes"),
 			d00direction:				this.getValue("d00direction"),
@@ -141,6 +141,41 @@ function onLoad_demande () {
 		}
 		return differences;
 	};
+	
+	/***********************************************/
+	//-----------------------------------------------
+	// JR le 27/03/2017
+	// renvoie un objet JSON contenant les valeurs actuelles des champs à surveiller
+	// pour détecter les modifs sur la connexion PAP
+	thisComponent.setValue('pap_initiale',thisComponent.getValue('a07postesbudgetaires'));
+//	thisComponent.getPAP = function () {
+//		return {
+//			a07postesbudgetaires:this.getValue("a07postesbudgetaires")
+//		};
+//	};
+//	
+//	//-----------------------------------------------
+//	// renvoie un tableau JSON avec la liste des différences par rapport à la demande initiale.
+//	// Renvoie un tableau vide [] si aucun changement
+//	thisComponent.getChangementPAP = function () {
+//		var papInitiale = JSON.parse(this.getValue("pap_initiale")),
+//		papActuelle = this.getEtatDemande(),
+//		differences = [],
+//		fieldName
+//		;
+//		for (var fieldName in papInitiale) {
+//			if (papInitiale[fieldName] != papActuelle[fieldName]) {
+//				differences.push({
+//					"name" : fieldName,
+//					"label" : thisComponent.ui.find("[name=" + fieldName + "]").closest(".form-group").find("label span.trn").html(),
+//					"before" : papInitiale[fieldName],
+//					"after" : papActuelle[fieldName]
+//				});
+//			}
+//		}
+//		return differences;
+//	};
+	/***********************************************/
 
 	//-----------------------------------------------
 	// cette fonction se charge aussi de vérifier la case à cocher de confirmation,
@@ -192,15 +227,15 @@ function onLoad_demande () {
 		
 		// JR Le 07/02/2017 mise à jour des nouvelles connexion
 		$.get("template_auto/demande/demande.php", {
-			service      : "get_regle_valideur",
-			societe      : thisComponent.getValue("d00societes"),
-			type_contrat : thisComponent.getValue("r06typecontrat"),
-			duree        : thisComponent.getValue("nb_mois_cdd"),
-			direction    : thisComponent.getValue("d00direction"),
-			motif_recrutement: thisComponent.getValue("d00motifrecrutement"),
-			metier       : thisComponent.getValue("d00metiers"),
-			transverse   : thisComponent.getValue("transverse"),
-			valeur_salaire   : thisComponent.getValue("d00valeursalaire")
+			service      		: "get_regle_valideur",
+			societe      		: thisComponent.getValue("d00societes"),
+			type_contrat 		: thisComponent.getValue("r06typecontrat"),
+			duree        		: thisComponent.getValue("nb_mois_cdd"),
+			direction    		: thisComponent.getValue("d00direction"),
+			motif_recrutement	: thisComponent.getValue("d00motifpap"),
+			metier       		: thisComponent.getValue("d00metiers"),
+			transverse   		: thisComponent.getValue("transverse"),
+			valeur_salaire		: thisComponent.getValue("d00valeursalaire")
 		}).done(function(result) {
 			// setConnectionValue(champ, tableConnectée, clé) .setConnectionValue() est similaire à setValue() sauf qu'il met à jour le complément.
 			thisComponent.setConnectionValue("valideur1", "utilisateur", result.valideur1 || "");
@@ -354,7 +389,7 @@ function onLoad_demande () {
 			gopaas.date.toSql(this.getValue("date_demande") || ''),
 			($('#COMPLEMENT_d00direction').val() || '').replace(/[^\w ]/g,''),
 			(code_contrat || '').replace(/[^\w ]/g,''),
-			($('#COMPLEMENT_d00motifrecrutement').val() || '').replace(/[^\w ]/g,''),
+			($('#COMPLEMENT_d00motifpap').val() || '').replace(/[^\w ]/g,''),
 			($('#COMPLEMENT_d00postes').val() || '').replace(/[^\w ]/g,'')
 		];
 		return data.join(' - ') + '.pdf';
@@ -470,13 +505,13 @@ function onLoad_demande () {
 		thisComponent.ui.find("#salaire").closest('.form-group').show();
 		// JR 07/02/2017 MAJ connexions motif_recrutement et metier
 		thisComponent.ui.find("#combo_motif_recrutement").closest('.form-group').show();
-		thisComponent.ui.find("#COMPLEMENT_d00motifrecrutement").closest('.form-group').show();
-		// JR 07/02/2017 MAJ connexions motif_recrutement et valeur retourné MOTENT002 = Remplacement
+		thisComponent.ui.find("#COMPLEMENT_d00motifpap").closest('.form-group').show();
+		// JR 07/02/2017 MAJ connexions motif_recrutement et valeur retourné MOTPAP002 = Remplacement
 		// JR 10/02/2017 correction  condition motif_recrutement - j'ai supprimé les LOWERCASE les valeurs sont en majuscule.
-		// var motif_recrutement = $('#COMPLEMENT_d00motifrecrutement').val();
-		var motif_recrutement = thisComponent.getValue("d00motifrecrutement");
+		// var motif_recrutement = $('#COMPLEMENT_d00motifpap').val();
+		var motif_recrutement = thisComponent.getValue("d00motifpap");
 		// console.log("script exec : "+motif_recrutement);
-		if (motif_recrutement === 'MOTENT002') {
+		if (motif_recrutement === 'MOTPAP002') {
 			thisComponent.ui.find("#COMPLEMENT_d00personneremplacee").closest('.form-group').show();
 		} else {
 			thisComponent.ui.find("#COMPLEMENT_d00personneremplacee").closest('.form-group').hide();
@@ -568,9 +603,9 @@ function onLoad_demande () {
 			verifTypeContrat(thisComponent);			
         }
     }, 1000);
-	
+
 	function verifTypeContrat(thisComponent){
-		var motif_recrutement = thisComponent.ui.find('[name=d00motifrecrutement]').val();
+		var motif_recrutement = thisComponent.ui.find('[name=d00motifpap]').val();
 		// console.log(motif_recrutement);
 		if(thisComponent.getValue('r06typecontrat')==='CTT001'){
 			masquer_stagiaire(thisComponent);
@@ -578,22 +613,24 @@ function onLoad_demande () {
 			masquer_date_fin_duree(thisComponent);
 			// Update MGH 25/05/2016
 			if(motif_recrutement!=null){
-				if (motif_recrutement === 'MOTENT002') {
+				if (motif_recrutement === 'MOTPAP002') {
 					masquer_prevue_bp_avril_2016(thisComponent);
 				}
 			}
 		}
+
 		if(thisComponent.getValue('r06typecontrat')==='CTT002'){
 			masquer_stagiaire(thisComponent);
 			afficher_cdi(thisComponent);
 			masquer_date_fin_duree(thisComponent);
 			// Update MGH 25/05/2016
 			if(motif_recrutement!=null){
-				if (motif_recrutement === 'MOTENT002') {
+				if (motif_recrutement === 'MOTPAP002') {
 					masquer_prevue_bp_avril_2016(thisComponent);
 				}
 			}
 		}
+
 		// Stagiaire / Contrat pro
 		if((thisComponent.getValue('r06typecontrat')!=='CTT002')&&(thisComponent.getValue('r06typecontrat')!=='CTT001')){
 			masquer_cdi(thisComponent);
@@ -603,31 +640,31 @@ function onLoad_demande () {
 		}
 		calcul_duree(thisComponent);
 	}
-	
+
 	/****************************************************************/
 	// JR LE 10/02/2017 NOUVEAU SCRIPT POUR CHAMP MOTIF RECRUTEMENT //
 	/****************************************************************/
 	// lancer la vérification au chargement
 	verifMotifRecrut(thisComponent);
 	// SCRIPT avec intervalId
-	thisComponent.ui.find("[name=d00motifrecrutement]").data("oldValue", thisComponent.ui.find("[name=d00motifrecrutement]").val());
+	thisComponent.ui.find("[name=d00motifpap]").data("oldValue", thisComponent.ui.find("[name=d00motifpap]").val());
     var intervalId1 = setInterval(function() {
         if (!thisComponent.ui.closest("body").length) { // si le composant a été supprimé (onglet fermé)
             clearInterval(intervalId1);
             return;
         }
-        var d00motifrecrutement = thisComponent.ui.find("[name=d00motifrecrutement]");
-        if (d00motifrecrutement.val() !== d00motifrecrutement.data("oldValue")) {
-			d00motifrecrutement.data("oldValue", d00motifrecrutement.val());
+        var d00motifpap = thisComponent.ui.find("[name=d00motifpap]");
+        if (d00motifpap.val() !== d00motifpap.data("oldValue")) {
+			d00motifpap.data("oldValue", d00motifpap.val());
 			verifMotifRecrut(thisComponent);
         }
     }, 1000);
 	
 	function verifMotifRecrut (thisComponent){
-		var motif_recrutement = thisComponent.getValue('d00motifrecrutement');
+		var motif_recrutement = thisComponent.getValue('d00motifpap');
 		var type_contrat = thisComponent.getValue('r06typecontrat');
 		
-		if (motif_recrutement === 'MOTENT002') {
+		if (motif_recrutement === 'MOTPAP002') {
 			thisComponent.ui.find("#COMPLEMENT_d00personneremplacee").closest(".form-group").show();
 			// Update MGH 25/05/2016
 			if(type_contrat==='CTT001'){
@@ -685,15 +722,15 @@ function onLoad_demande () {
 	// lancer la vérification au chargement
 	verifMotifRecrut(thisComponent);
 	// SCRIPT avec intervalId
-	thisComponent.ui.find("[name=d00motifrecrutement]").data("oldValue", thisComponent.ui.find("[name=d00motifrecrutement]").val());
+	thisComponent.ui.find("[name=d00motifpap]").data("oldValue", thisComponent.ui.find("[name=d00motifpap]").val());
     var intervalId1 = setInterval(function() {
         if (!thisComponent.ui.closest("body").length) { // si le composant a été supprimé (onglet fermé)
             clearInterval(intervalId1);
             return;
         }
-        var d00motifrecrutement = thisComponent.ui.find("[name=d00motifrecrutement]");
-        if (d00motifrecrutement.val() !== d00motifrecrutement.data("oldValue")) {
-			d00motifrecrutement.data("oldValue", d00motifrecrutement.val());
+        var d00motifpap = thisComponent.ui.find("[name=d00motifpap]");
+        if (d00motifpap.val() !== d00motifpap.data("oldValue")) {
+			d00motifpap.data("oldValue", d00motifpap.val());
 			verifMotifRecrut(thisComponent);
         }
     }, 1000);
@@ -853,15 +890,15 @@ function onLoad_demande () {
 				// rempli le circuit de validation
 				// JR 07/02/2017 MAJ des champs connexions
 				$.get("template_auto/demande/demande.php", {
-					service      : "get_regle_valideur",
-					societe      : thisComponent.getValue("d00societes"),
-					type_contrat : thisComponent.getValue("r06typecontrat"),
-					duree        : thisComponent.getValue("nb_mois_cdd"),
-					direction    : thisComponent.getValue("d00direction"),
-					motif_recrutement: thisComponent.getValue("d00motifrecrutement"),
-					metier       : thisComponent.getValue("d00metiers"),
-					transverse   : thisComponent.getValue("transverse"),
-					valeur_salaire	: thisComponent.getValue("d00valeursalaire")
+					service				: "get_regle_valideur",
+					societe     		: thisComponent.getValue("d00societes"),
+					type_contrat 		: thisComponent.getValue("r06typecontrat"),
+					duree        		: thisComponent.getValue("nb_mois_cdd"),
+					direction			: thisComponent.getValue("d00direction"),
+					motif_recrutement	: thisComponent.getValue("d00motifpap"),
+					metier				: thisComponent.getValue("d00metiers"),
+					transverse			: thisComponent.getValue("transverse"),
+					valeur_salaire		: thisComponent.getValue("d00valeursalaire")
 				}).done(function(result) {
 					// setConnectionValue(champ, tableConnectée, clé) . setConnectionValue() est similaire à setValue() sauf qu'il met à jour le complément.
 					thisComponent.setConnectionValue("valideur1", "utilisateur", result.valideur1 || "");
@@ -880,7 +917,7 @@ function onLoad_demande () {
 							var $this = $(this);
 							if ($this.closest(".form-group").find("[name=sous_service],[name=prevu_dernier_pb_actu_commentaire],[name=recruteur]").length !== 0) { return; } // cas particuliers : champs ignorés non obligatoires, à ignorer dans la vérification
 							
-							if ($this.closest(".form-group").find("[name=d00societes],[name=d00direction],[name=d00metiers],[name=d00nommanager],[name=d00materielinformatique],[name=r06typecontrat],[name=d00motifrecrutement]").length !== 0) { return; } // JR le 14/02/2017 cas particuliers : Ce sont les nouveaux champs connexion liste que je n'arrive pas à tester
+							if ($this.closest(".form-group").find("[name=d00societes],[name=d00direction],[name=d00metiers],[name=d00nommanager],[name=d00materielinformatique],[name=r06typecontrat],[name=d00motifpap]").length !== 0) { return; } // JR le 14/02/2017 cas particuliers : Ce sont les nouveaux champs connexion liste que je n'arrive pas à tester
 							
 							if ($this.closest(".form-group").find(".datepicker").length === 1) { if ($this.val() === '00/00/0000') { $this.val(""); } } // cas particulier : les dates sont assimilées à vide si elle vaut 00/00/0000
 							if ($this.closest(".form-group").css("display") !== "none" && !$this.hasClass("gopaas-file-selector") && ($this.val() === "" || typeof $this.val() === undefined || $this.val() === null)) { // element visible et non renseigné . On exclue gopaas-file-selector car c'est un champ temporaire, vidé à chaque fois qu'on sélectionne un fichier joint.
@@ -1056,7 +1093,34 @@ function onSave_demande(close) {
 		differences = thisComponent.computeDifferences(),
 		listeModif = ""
 	;
+	/*
+	 * JR le 27/03/2017 Exécution de la fonction
+	 */
+	var papActuel = thisComponent.getValue('a07postesbudgetaires');
+	var papInitiale = thisComponent.getValue('pap_initiale');
+	
+	if (papActuel !== papInitiale) {
+		gopaas.dialog.info("Vous avez fait une modification");
+		/*
+		 * FAIRE un UPDATE ITEM
+		 */
+//		var form = thisComponent.ui.find("form:first");
+//		var formData = form.serializeArray(); // où form est ton formulaire thisComponent.ui.find("form:first")
+/*
+  [{"name":"a07mouvement","value":"MVTPAP001"},{"name":"a07motif","value":"MOTPAP001"},{"name":"creation_par","value":"ccollet"},{"name":"a07typerecrutement","value":"RECRUT001"},{"name":"date_creation","value":"21/03/2017"},{"name":"a07salarieremplace","value":""},{"name":"a07poste","value":"PST00001"},{"name":"a07famillepostedetail","value":"FAMD00001"},{"name":"a07familleposte","value":""},{"name":"a07societe","value":"STE0004"},{"name":"a07localisation","value":"LOC0002"},{"name":"a07typecontrat","value":"CTT005"},{"name":"a07direction","value":"DIR_COV005"},{"name":"a07tauxactivite","value":"50"},{"name":"a07metier","value":"MET0003"},{"name":"a07nbmoispaiement","value":"12"},{"name":"a07salariePAP","value":""},{"name":"a07matriculerefbudget","value":""},{"name":"a07anneepap","value":"2017"},{"name":"a07trimestre","value":"T2"},{"name":"r17budget","value":"BUDG002"},{"name":"r17budget2","value":"BUDG002"},{"name":"a07commentairebudget","value":""},{"name":"a07prevdatearrivee","value":"14/04/2017"},{"name":"a07prevdatedepart","value":""},{"name":"a07prevvariationeffectif","value":"0,5"},{"name":"a07prevsalaireannuelhc","value":"45 000"},{"name":"a07prevetp","value":"0,36"},{"name":"a07prevprimeanneepleinehc","value":"1 000"},{"name":"a07statutpap","value":"STAPAP001"},{"name":"a07commentairesuivi","value":"A3"},{"name":"a07reeldatearrivee","value":""},{"name":"a07reeldatedepart","value":""},{"name":"a07reelvariationeffectif","value":"0,50"},{"name":"a07reelsalaireannuelhc","value":""},{"name":"a07reeletp","value":""},{"name":"a07reelprimeanneepleinehc","value":""},{"name":"a07forecastdatearrivee","value":"14/04/2017"},{"name":"a07forecastdatedepart","value":""},{"name":"a07forecastsalaireannuelbrut","value":""},{"name":"searchlinkedview","value":""},{"name":"a07originerecrutement","value":"ORI001"},{"name":"a07cabinetrecrutement","value":"CAB018"},{"name":"a07tauxfraisrecrutprevisionnel","value":"1 000,00"},{"name":"a07fraisrecrutementprevisionnel","value":"1 000"},{"name":"a07prevmsanneepleinecc","value":"66 600"},{"name":"a07prevmsproratcc","value":"23 976"},{"name":"a07prevecosortiemsproratcc","value":"0"},{"name":"a07prevecosortiemsanneepleinecc","value":"0"},{"name":"a07prevsurcoutecomsproratcc","value":"23 976"},{"name":"a07prevsurcoutecomsanneepleinecc","value":"66 600"},{"name":"a07prevecosortieetp","value":"0,00"},{"name":"a07prevsurcoutecoetp","value":"0,36"},{"name":"a07reelmsanneepleinecc","value":""},{"name":"a07reelmsproratcc","value":""},{"name":"a07reelecosortiemsproratcc","value":""},{"name":"a07reelecosortiemsanneepleinecc","value":""},{"name":"a07reelsurcoutecomsproratcc","value":""},{"name":"a07reelsurcoutecomsanneepleinecc","value":""},{"name":"a07reelecosortieetp","value":""},{"name":"a07reelsurcoutecoetp","value":""},{"name":"a07forecastsurcoutecomsanneepleinecc","value":"66 600"},{"name":"a07forecastsurcoutecomsproratcc","value":"23 976"},{"name":"a07forecastetp","value":"0,36"},{"name":"a07forecastsurcoutecoetp","value":"0,36"},{"name":"a07forecastvariationeffectif","value":"0,50"},{"name":"ida07postesbudgetaires","value":"44"},{"name":"heure_creation","value":"11:50:10"},{"name":"annee","value":""},{"name":"a07matriculesalarieremplace","value":""},{"name":"dar_attribuee","value":"on"},{"name":"cle","value":"PAP0000168"},{"name":"date_modification","value":"27/03/2017"},{"name":"modification_par","value":"jrungen@nids.fr"},{"name":"heure_modification","value":"17:16:36"}]
+ */
+		formData = JSON.parse([{"name":"cle","value":papInitiale},{"name":"dar_attribuee","value":"0"}]);
+		formData.push({ name:"a07postesbudgetaires", value:thisComponent.data.tableName }); // ajoute le nom de la table aux paramètres du formulaire
 
+		$.post( gopaas.url.webservice("item","update-item"), formData )
+		.done(function(updatedItem) {
+		       // lance le callback onSuccess
+		       onSuccess && onSuccess.call(this, updatedItem, close, onSuccess, differences, onFail);
+
+		}).fail(gopaas.dialog.ajaxFail).fail(function() { onFail && onFail.call(thisComponent, close, onSuccess, differences, onFail); });
+	}
+	/************************************************/
+	
 	if (etape === "Brouillon" || etape === "Envoi demande") {
 		thisComponent.setValue("demande_initiale", JSON.stringify(thisComponent.getEtatDemande()));
 	}
@@ -1162,15 +1226,15 @@ function onSave_demande(close) {
 	if (thisComponent.getValue("etape") === "Brouillon" || thisComponent.getValue("etape") === "Envoi demande") {
 		// JR 07/02/2017 MAJ des champs connexions
 		$.get("template_auto/demande/demande.php", {
-			service      : "get_regle_valideur",
-			societe      : thisComponent.getValue("d00societes"),
-			type_contrat : thisComponent.getValue("r06typecontrat"),
-			duree        : thisComponent.getValue("nb_mois_cdd"),
-			direction    : thisComponent.getValue("d00direction"),
-			motif_recrutement: thisComponent.getValue("d00motifrecrutement"),
-			metier       : thisComponent.getValue("d00metiers"),
-			transverse   : thisComponent.getValue("transverse"),
-			valeur_salaire	: thisComponent.getValue("d00valeursalaire")
+			service				: "get_regle_valideur",
+			societe      		: thisComponent.getValue("d00societes"),
+			type_contrat		: thisComponent.getValue("r06typecontrat"),
+			duree				: thisComponent.getValue("nb_mois_cdd"),
+			direction			: thisComponent.getValue("d00direction"),
+			motif_recrutement	: thisComponent.getValue("d00motifpap"),
+			metier				: thisComponent.getValue("d00metiers"),
+			transverse			: thisComponent.getValue("transverse"),
+			valeur_salaire		: thisComponent.getValue("d00valeursalaire")
 		}).done(function(result) {
 			// setConnectionValue(champ, tableConnectée, clé) . setConnectionValue() est similaire à setValue() sauf qu'il met à jour le complément.
 			thisComponent.setConnectionValue("valideur1", "utilisateur", result.valideur1 || "");
@@ -1272,7 +1336,7 @@ function create_candidat(thisComponent)
 		"cs00direction":thisComponent.getValue("d00direction"),
 		"cs00postes":thisComponent.getValue("d00postes"),
 		"cs00typecontrat":thisComponent.getValue("r06typecontrat"),
-		"cs00motifentree":thisComponent.getValue("d00motifrecrutement"),
+		"cs00motifentree":thisComponent.getValue("d00motifpap"),
 		"cs00metiers":thisComponent.getValue("d00metiers"),
 		"cs00nommanager":thisComponent.getValue("d00nommanager"),
 		"recruteur":thisComponent.getValue("d00recruteur"),
