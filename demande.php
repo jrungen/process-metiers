@@ -1,9 +1,9 @@
 <?php // a supprimer
 
 Script::init(array(
-	'content' => 'application/json',
-	'param_not_empty' => array("service"),
-	'session' => false, // l'authentification doit être contrôlée au cas par cas en fonction du service demandé. certains services doivent être accessibles sans authentification, notamment le service 'validate'.
+		'content' => 'application/json',
+		'param_not_empty' => array("service"),
+		'session' => false, // l'authentification doit être contrôlée au cas par cas en fonction du service demandé. certains services doivent être accessibles sans authentification, notamment le service 'validate'.
 ));
 
 require_once Script::buildPath('class','RulesManager.php');
@@ -18,14 +18,14 @@ function normaliserPermission($permission) { // cette fonction supprime les doub
 //-------------------------------------------------------
 if ($_REQUEST['service'] === 'autre') {
 	if ($_REQUEST['mode'] === 'update_pap') {
-			Script::$db->exec("
-			UPDATE a07postesbudgetaires SET 
+		Script::$db->exec("
+			UPDATE a07postesbudgetaires SET
 				dar_attribuee = '1'
 			WHERE cle = '".$_REQUEST['cle_pap']."';");
 		echo json_encode('OK');
 	}
 }else if ($_REQUEST['service'] === 'get_regle_valideur') {
-	
+
 	if (!Script::isAuthentified()) { // on est obligé de contrôler manuellement l'authentification, qui a été désactivée dans Script::init() . Voir plus haut l'appel à Script::init(), paramètre 'session'.
 		throw new GPSessionException();
 	}
@@ -50,15 +50,15 @@ if ($_REQUEST['service'] === 'autre') {
 				OR type_contrat NOT IN ('CTT002','CTT001')
 			)
 	", array(
-		"societe" => $_REQUEST["societe"],
-		"type_contrat" => $_REQUEST["type_contrat"],
-		"duree" => $_REQUEST["duree"],
-		"metier" => $_REQUEST["metier"],
-		"motif_recrutement" => $_REQUEST["motif_recrutement"],
-		"direction" => $_REQUEST["direction"],
-		"transverse" => $_REQUEST["transverse"],
-		"fichier" => 'demande',
-		"valeur_salaire" => $_REQUEST["valeur_salaire"]
+			"societe" => $_REQUEST["societe"],
+			"type_contrat" => $_REQUEST["type_contrat"],
+			"duree" => $_REQUEST["duree"],
+			"metier" => $_REQUEST["metier"],
+			"motif_recrutement" => $_REQUEST["motif_recrutement"],
+			"direction" => $_REQUEST["direction"],
+			"transverse" => $_REQUEST["transverse"],
+			"fichier" => 'demande',
+			"valeur_salaire" => $_REQUEST["valeur_salaire"]
 	));
 	if (!$regle_valideur) {
 		echo "{}";
@@ -66,26 +66,26 @@ if ($_REQUEST['service'] === 'autre') {
 		// echo "SELECT valideur1, valideur2, valideur3, valideur4, valideur5, valideur6, valideur7
 		// FROM regle_validateur
 		// WHERE
-			// fichier = 'demande' AND
-			// societe = '".$_REQUEST['societe']."' AND
-			// IFNULL(direction,'') = '".$_REQUEST['direction']."' AND
-			// type_contrat = '".$_REQUEST['type_contrat']."' AND
-			// (
-				// type_contrat IN ('CTT002','CTT001') AND
-				// (
-					// transverse = '".$_REQUEST['transverse']."' AND
-					// (duree = '".$_REQUEST['duree']."' OR type_contrat = 'CTT001') AND
-					// metier = '".$_REQUEST['metier']."' AND
-					// motif_recrutement = '".$_REQUEST['motif_recrutement']."'
-				// )
-				// OR type_contrat NOT IN ('CTT002','CTT001')
-			// )";
+		// fichier = 'demande' AND
+		// societe = '".$_REQUEST['societe']."' AND
+		// IFNULL(direction,'') = '".$_REQUEST['direction']."' AND
+		// type_contrat = '".$_REQUEST['type_contrat']."' AND
+		// (
+		// type_contrat IN ('CTT002','CTT001') AND
+		// (
+		// transverse = '".$_REQUEST['transverse']."' AND
+		// (duree = '".$_REQUEST['duree']."' OR type_contrat = 'CTT001') AND
+		// metier = '".$_REQUEST['metier']."' AND
+		// motif_recrutement = '".$_REQUEST['motif_recrutement']."'
+		// )
+		// OR type_contrat NOT IN ('CTT002','CTT001')
+		// )";
 		// TEST DE LA REQUETE
 	} else {
 		echo json_encode($regle_valideur);
 	}
 
-//-------------------------------------------------------
+	//-------------------------------------------------------
 } else if ($_REQUEST['service'] === 'validate' || $_REQUEST['service'] === 'confirm') {
 
 	header("Content-type: text/html; charset=utf-8", true);
@@ -100,7 +100,7 @@ if ($_REQUEST['service'] === 'autre') {
 
 	// cas particulier: si on est dans un refus: pas besoin de confirmation
 	// if ($_REQUEST['answer'] === 'no' && $_REQUEST['service'] === 'validate') {
-		// $_REQUEST['service'] = 'confirm';
+	// $_REQUEST['service'] = 'confirm';
 	// }
 
 	$demande = Script::$db->fetch("SELECT etape, cle, permission, valideur1, valideur2, valideur3, valideur4, valideur5, valideur6, pdf FROM demande WHERE iddemande = ? AND token = ?", array($_REQUEST['id'],$_REQUEST['token']));
@@ -131,32 +131,32 @@ if ($_REQUEST['service'] === 'autre') {
 		// met à jour la fiche
 		// Rmq : la date de validation est normalement mise à jour par les rules, ici on force la date pour que le fichier PDF généré juste après ait sa dernière validation à jour
 		Script::$db->exec("
-			UPDATE demande SET 
-				etape = ?, 
-				token = ?, 
-				permission = ?, 
-				`date_validation$numCurrentValidation` = NOW(), 
+				UPDATE demande SET
+				etape = ?,
+				token = ?,
+				permission = ?,
+				`date_validation$numCurrentValidation` = NOW(),
 				`confirmation_valideur$numCurrentValidation` = ? ,
 				commentaire_refus = ?
-			WHERE iddemande = ?", 
-			array(
-				$nextStep, 
-				Script::generateRandomString(16), 
-				$permission, 
-				$_REQUEST['answer'] === 'yes' ? 1 : 0, 
-				isset($_REQUEST['commentaire_refus']) ? $_REQUEST['commentaire_refus'] : null,
-				$_REQUEST['id'],
-			));
+				WHERE iddemande = ?",
+				array(
+						$nextStep,
+						Script::generateRandomString(16),
+						$permission,
+						$_REQUEST['answer'] === 'yes' ? 1 : 0,
+						isset($_REQUEST['commentaire_refus']) ? $_REQUEST['commentaire_refus'] : null,
+						$_REQUEST['id'],
+				));
 		// met à jour le fichier PDF
 		// Rmq 1 : pour simplifier le processus le nom du fichier PDF n'est pas mis à jour, en théorie le nom ne change car les champs dont il dépend : date_demande, direction, type_contrat... ne changent pas dans ce webservice)
 		// Rmq 2 : utiliser le webservice en mode HTTP ne fonctionne pas car ce dernier attend un user authentifié, ce qui n'est pas nécessairement le cas ici (et de toute façon on ne transmet pas le cookie de session)
 		/* Http::post(Script::getApplicationURL()."/webservice/pdf/html2pdf.php", array(
-				'action' => "file",
-				'table'  => "demande",
-				'modele' => "demande",
-				'cle'    => $demande->cle,
-				'nom'    => $demande->pdf,
-		)); */
+		 'action' => "file",
+		 'table'  => "demande",
+		 'modele' => "demande",
+		 'cle'    => $demande->cle,
+		 'nom'    => $demande->pdf,
+		 )); */
 		ob_start();
 		$_REQUEST['cle'] = $demande->cle; // uniquement pour le modèle PDF
 		include Script::buildPath('file','__pdf__','demande.php'); // le modèle PDF
@@ -181,14 +181,14 @@ if ($_REQUEST['service'] === 'autre') {
 			r06typecontrat.r06codetypecontrat as contrat_intitule,
 			r11motifentree.r11libmotifentree as motif_recrut_intitule,
 			demande.*
-		FROM demande 
+		FROM demande
 			LEFT JOIN r15direction ON r15direction.cle = demande.d00direction
 			LEFT JOIN r00societes ON r00societes.cle = demande.d00societes
 			LEFT JOIN r05postes ON r05postes.cle = demande.d00postes
 			LEFT JOIN r06typecontrat ON r06typecontrat.cle = demande.r06typecontrat
 			LEFT JOIN r11motifentree ON r11motifentree.cle = demande.d00motifrecrutement
-		WHERE iddemande = ?", 
-	$_REQUEST['id']);
+		WHERE iddemande = ?",
+			$_REQUEST['id']);
 	$demande->isStagiaire = !($demande->type_contrat === 'CTT002' || $demande->type_contrat === 'CTT001');
 
 
@@ -298,3 +298,5 @@ if ($_REQUEST['service'] === 'autre') {
 } else {
 	throw new GPFatalException("Le service demandé '$_REQUEST[service]' est inconnu");
 }
+
+?>
