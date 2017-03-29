@@ -104,17 +104,17 @@ class TacheHelper {
 	}
 	
 	/**
-	 * @param unknown $role_tiers (salarié, consultant, interimaire)
-	 * @param unknown $mouvement entrée ou sortie
+	 * @param unknown $roleTiers (salarié, consultant, interimaire)
+	 * @param unknown $typeMvmt entrée ou sortie
 	 * @return $data_r02listetaches La liste des tâches à créer par rôle tiers et type de mouvement.
 	 */
 	
-	public static function get_refTaches($role_tiers, $mouvement) {
+	public static function get_refTaches($roleTiers, $typeMvmt) {
 		// récupérer les données r02listetaches
 		try{
 	
 			// Requete INSERT INTO
-			$query = "SELECT * FROM r02listetaches where r03typemouvement = '".$mouvement."' and r04roletiers = '".$role_tiers."' ";
+			$query = "SELECT * FROM r02listetaches where r03typemouvement = '".$typeMvmt."' and r04roletiers = '".$roleTiers."' ";
 			
 			// on va chercher tous les enregistrements de la requête
 			$result=Script::$db->prepare($query);
