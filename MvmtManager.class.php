@@ -25,7 +25,7 @@ class MvmtManager {
 	
 	private function load_rules() {
 		try{
-	
+			//TODO L'ordre des action doit être gérer avec une colonne ordre.
 			$query = "SELECT action 
 					FROM regle_mouvement 
 					where source='".$this->_source."' 
@@ -34,7 +34,8 @@ class MvmtManager {
 					and typecontrat='".$this->_mvmtParent->get_personnePhysique()->get_typeContrat()."'
 					and materielinformatique='".$this->_mvmtParent->get_personnePhysique()->get_materielInformatique()."'
 					and bureau='".$this->_mvmtParent->get_personnePhysique()->get_bureau()."'
-					and adresse_messagerie='".$this->_mvmtParent->get_personnePhysique()->get_adresseMessagerie()."';
+					and adresse_messagerie='".$this->_mvmtParent->get_personnePhysique()->get_adresseMessagerie()."'
+					order by ordre ;
 					";
 			
 			echo 'conditions='.$query;
@@ -57,81 +58,69 @@ class MvmtManager {
 	}
 	
 	public function executeActions(){
-		if (!is_null($this->_mvmtParent->get_personnePhysique())){
-			$this->_mvmtParent->get_personnePhysique()->valideRecrutementPAP();
-		}
 		
 		foreach ($this->_data_regles as $regle){
 			echo '\naction à exécuter : '.$regle->action;
 			switch ($regle->action){
-				case(ActionMvmt::AVENANT_DRH):
+				case(ActionMvmt::DRH_AVENANT):
 					break;
-				case(ActionMvmt::AVENANT_DRI):
+				case(ActionMvmt::DRI_AVENANT):
 					break;
-				case(ActionMvmt::AVENANT_DSI):
+				case(ActionMvmt::DSI_ENTREE):
 					break;
-				case(ActionMvmt::SORTIE_DRH):
+				case(ActionMvmt::DRH_SORTIE):
 					$mvmtDrhSortie = new MvmtDRH($this->_mvmtParent->get_personnePhysique(),TypeMvmt::DEPART);
 					$mvmtDrhSortie->create();
 					break;
-				case(ActionMvmt::SORTIE_DRI):
+				case(ActionMvmt::DRI_ENTREE):
 					$mvmtDriSortie = new MvmtDRI($this->_mvmtParent,TypeMvmt::DEPART);
 					$mvmtDriSortie->create();
 					break;
-				case(ActionMvmt::SORTIE_DSI):
+				case(ActionMvmt::DSI_SORTIE):
 					$mvmtDsiSortie = new MvmtDSI($this->_mvmtParent,TypeMvmt::DEPART);
 					$mvmtDsiSortie->create();
 					break;
-				case(ActionMvmt::SORTIE_PAP):
-					//TODO
-					break;
-				case(ActionMvmt::ENTREE_DRH):
-					// Déjà crée directement après la création PP.
-					break;
-				case(ActionMvmt::ENTREE_DRI):
+				case(ActionMvmt::DRI_ENTREE):
 					$mvmtDriEntree = new MvmtDRI($this->_mvmtParent,TypeMvmt::ARRIVEE);
 					$mvmtDriEntree->create();
 					break;
-				case(ActionMvmt::ENTREE_DSI):
+				case(ActionMvmt::DSI_ENTREE):
 					$mvmtDsiEntree = new MvmtDSI($this->_mvmtParent,TypeMvmt::ARRIVEE);
 					$mvmtDsiEntree->create();
 					break;
-				case(ActionMvmt::ENTREE_PAP):
+				case(ActionMvmt::PAP_VALID_RECRUTEMENT):
+					//TODO depuis mvmtDRH, récupérer date d'arrivée réelle et/ou date depart réelle, salaire réel et prime réelle.
+					//		déjà codé en js sur la maj d'un mvmtDRH
 					$this->_mvmtParent->get_personnePhysique()->valideRecrutementPAP();
 					break;
-				case(ActionMvmt::ENTREE_PROLONGATION_DRH):
+				case(ActionMvmt::DRH_ENTREE_PROLONGATION):
 					break;
-				case(ActionMvmt::ENTREE_PROLONGATION_DRI):
+				case(ActionMvmt::DRI_ENTREE_PROLONGATION):
 					break;
-				case(ActionMvmt::ENTREE_PROLONGATION_DSI):
+				case(ActionMvmt::DSI_ENTREE_PROLONGATION):
 					break;
-				case(ActionMvmt::ENTREE_PROLONGATION_PAP):
+				case(ActionMvmt::PAP_ENTREE_PROLONGATION):
 					break;
-				case(ActionMvmt::ENTREE_REMPLACEMENT_PAP):
+				case(ActionMvmt::PAP_ENTREE_REMPLACEMENT):
 					break;
-				case(ActionMvmt::AJOUT_PP):
-					// Implicite car manager appellé depuis le post create de la PP.
+				case(ActionMvmt::DRH_SORTIE_PROLONGATION):
 					break;
-				case(ActionMvmt::MAIL_DRH):
-					//TODO pour CDD
+				case(ActionMvmt::DRI_SORTIE_PROLONGATION):
 					break;
-				case(ActionMvmt::MAIL_DRI):
-					//TODO pour CDD
+				case(ActionMvmt::DSI_SORTIE_PROLONGATION):
 					break;
-				case(ActionMvmt::MAIL_DSI):
-					//TODO pour CDD
+				case(ActionMvmt::PAP_SORTIE_PROLONGATION):
 					break;
-				case(ActionMvmt::MAIL_PAP):
+				case(ActionMvmt::DRH_MAIL):
+					//TODO pour CDD->CDI
 					break;
-				case(ActionMvmt::MAIL_CDD_CDI_DRH):
+				case(ActionMvmt::DRI_MAIL):
+					//TODO
 					break;
-				case(ActionMvmt::SORTIE_PROLONGATION_DRH):
+				case(ActionMvmt::DSI_MAIL):
+					//TODO
 					break;
-				case(ActionMvmt::SORTIE_PROLONGATION_DRI):
-					break;
-				case(ActionMvmt::SORTIE_PROLONGATION_DSI):
-					break;
-				case(ActionMvmt::SORTIE_PROLONGATION_PAP):
+				case(ActionMvmt::PAP_MAIL):
 					break;
 			}
 		}
