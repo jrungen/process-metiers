@@ -110,7 +110,14 @@ class MvmtDRH extends Mvmt{
 	}
 	
 	protected function postCreate(){
+		//TODO Si dernier mvmt de la PP (cas CDD->CDI ou inverse)
+		// alors mail paie
+		// findLastMvmtByPP
 		TacheHelper::createTaches($this);
+	}
+	
+	public function findLastMvmtByPP(){
+		
 	}
 }
 

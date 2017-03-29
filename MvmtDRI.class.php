@@ -25,6 +25,8 @@ class MvmtDRI extends Mvmt{
 			$this->_personneRemplacee = $dar->get_personneRemplacee();
 		}
 		$this->_typeMouvement = $this->_mvmtParent->get_typeMouvement();
+		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
+		$this->_nomManager = $this->_personnePhysique->get_nomManager();
 	}
 	
 	/**
@@ -41,11 +43,11 @@ class MvmtDRI extends Mvmt{
 					date_modification, heure_modification, r04roletiers)
 					values
 					('".$this->_cle."_dri', '".$this->_personnePhysique->get_cle()."', '".$this->_mvmtParent->get_cle()."',
-					'".$this->_societes."', '".$this->_direction."', '".$this->_mvmtParent->get_nomManager()."',
+					'".$this->_societes."', '".$this->_direction."', '".$this->_nomManager."',
 					'".$this->_poste."', '".$this->_personneRemplacee."', '".$this->_typeContrat."',
 					'".$this->_personnePhysique->get_source()."',
 					CURDATE(), CURTIME(), 'candidat',
-					CURDATE(),  CURTIME(), '".$this->_personnePhysique->get_roleTiers()."' )
+					CURDATE(),  CURTIME(), '".$this->_roleTiers."' )
 					";
 		
 			// on va chercher tous les enregistrements de la requ?te
