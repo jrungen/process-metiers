@@ -4,7 +4,7 @@
  * @author JRN
  * Classe sur la table demande (DAR)
  */
-class demande {
+class Dar {
 
 	private $_annee;
 	private $_transverse;
@@ -812,11 +812,6 @@ class demande {
 
 	private function postDelete(){
 	}
-
-}
-
-class Dar{
-
 
 }
 
