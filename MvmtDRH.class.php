@@ -25,9 +25,17 @@ class MvmtDRH extends Mvmt{
 		$this->_rttMonetises = $_rttMonetises;
 	}
 	
-	function MvmtDRH($personnePhysique, $typeMvmt){
+	function MvmtDRH($personnePhysique, $typeMouvement){
 		$this->_cle = MvmtDRH::generateKey();
 		$this->_personnePhysique = $personnePhysique;
+		
+		$this->_cochSituationCourant = 'Oui'; // Dernier mvmt donc dernière situation de la personne.
+		$this->_typeMouvement = $typeMouvement;
+		$this->_typeContrat = $this->_personnePhysique->get_typeContrat();
+		$this->_detailMouvement = $this->_personnePhysique->get_detailMouvement();
+		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
+		$this->_nomManager = $this->_personnePhysique->get_nomManager();
+		$this->_dateEffet = $this->_personnePhysique->get_dateEffet();
 		
 		//Source Fiche Personne Physique.
 		if (is_null($personnePhysique->get_candidat())) {
@@ -35,17 +43,9 @@ class MvmtDRH extends Mvmt{
 		}
 		else{
 			// Creation depuis candidat.
-			$this->_dateEffet = $this->_personnePhysique->get_candidat()->get_dateDebutContrat();
 			$this->_societes = $this->_personnePhysique->get_candidat()->get_societes();
-			$this->_typeContrat = $this->_personnePhysique->get_candidat()->get_typecontratGRE();
 			$this->_rttMonetises = $this->_personnePhysique->get_candidat()->get_nbJoursRttMonetises();
-			$this->_detailMouvement = $this->_personnePhysique->get_candidat()->get_detailMouvement();
 		}
-		$this->_cochSituationCourant = 'Oui';
-		$this->_typeMouvement = $typeMvmt;
-		
-		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
-		$this->_nomManager = $this->_personnePhysique->get_nomManager();
 	}
 	
 	public static function generateKey(){
@@ -77,7 +77,10 @@ class MvmtDRH extends Mvmt{
 		try{
 			$query = "INSERT INTO
 						a05typemouvement
-					(cle, a05dateeffet, a05cochsituationcourant, a00personnephysique, r03typemouvement, r00societes, r04roletiers, creation_par, date_creation, heure_creation, modification_par, date_modification, heure_modification, a05typecontrat, a05rttmonetises, a05superieurhierarchique)
+					(cle, a05dateeffet, a05cochsituationcourant, a00personnephysique,
+					r03typemouvement, r00societes, r04roletiers, creation_par,
+					date_creation, heure_creation, modification_par, date_modification,
+					heure_modification, a05typecontrat, a05rttmonetises, a05superieurhierarchique,r32detailmouvement)
 					values	(
 						'".$this->_cle."', '".$this->_dateEffet."',
 						'".$this->_cochSituationCourant."',
@@ -86,10 +89,12 @@ class MvmtDRH extends Mvmt{
 						'".$this->_societes."',
 						'".$this->_roleTiers."',
 						'".$this->_personnePhysique->get_source()."',
-						CURDATE(),CURTIME(), 'candidat', CURDATE(), CURTIME(),
+						CURDATE(),CURTIME(),
+						'".$this->_personnePhysique->get_source()."', CURDATE(), CURTIME(),
 						'".$this->_typeContrat."',
 						'".$this->_rttMonetises."',
-						'".$this->_nomManager."'
+						'".$this->_nomManager."',
+						'".$this->_detailMouvement."'
 					);";
 		
 			// on va chercher tous les enregistrements de la requête
