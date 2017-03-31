@@ -23,6 +23,7 @@ if($_REQUEST['mode']=='getKey'){
 
 //Bouton génération des mvmts depuis la fiche PP
 if($_REQUEST['mode']=='mouvement'){
+	
 	$personnePhysique = PersonnePhysique::findByCle($_REQUEST['cle']);
 	$personnePhysique->set_roleTiers( $_REQUEST['role_tiers']);
 	$personnePhysique->set_detailMouvement($_REQUEST['detail_mouvement']);

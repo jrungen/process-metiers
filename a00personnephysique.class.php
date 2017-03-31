@@ -332,7 +332,11 @@ class PersonnePhysique {
 	}
 	
 	public function set_materielInformatique($_materielInformatique){
-		$this->_materielInformatique = $_materielInformatique;
+		if($_materielInformatique == 'true'){
+			$this->_materielInformatique = 1;
+		}else{
+			$this->_materielInformatique = 0;
+		}
 	}
 	
 	public function get_bureau(){
@@ -340,7 +344,11 @@ class PersonnePhysique {
 	}
 	
 	public function set_bureau($_bureau){
-		$this->_bureau = $_bureau;
+		if($_bureau == 'true'){
+			$this->_bureau = 1;
+		}else{
+			$this->_bureau = 0;
+		}
 	}
 	
 	public function get_adresseMessagerie(){
@@ -348,7 +356,11 @@ class PersonnePhysique {
 	}
 	
 	public function set_adresseMessagerie($_adresseMessagerie){
-		$this->_adresseMessagerie = $_adresseMessagerie;
+		if($_adresseMessagerie == 'true'){
+			$this->_adresseMessagerie = 1;
+		}else{
+			$this->_adresseMessagerie = 0;
+		}
 	}
 	
 	public function get_nomManager(){
