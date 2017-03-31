@@ -21,9 +21,9 @@ class TacheHelper {
 		/*
 		 * Création tâches
 		 */
-		echo '-> Création tâches='.sizeof($data_r02listetaches).
+		echo "\n".'-> Création tâches='.sizeof($data_r02listetaches).
 		' pour type de mouvement '.$mvmt->get_typeMouvement().
-		'et rôle tiers '.$mvmt->get_personnePhysique()->get_roleTiers().'\n';
+		'et rôle tiers '.$mvmt->get_personnePhysique()->get_roleTiers()."\n";
 		try{
 		
 			$i = 1;

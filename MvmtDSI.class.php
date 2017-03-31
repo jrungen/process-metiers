@@ -6,11 +6,11 @@
  */
 class MvmtDSI extends Mvmt{
 	
-	function MvmtDSI($mvmtDrh){
+	function MvmtDSI($mvmtDrh, $typeMvmt){
 		$this->_mvmtParent = $mvmtDrh;
 		$this->_cle = $mvmtDrh->get_cle();
 		$this->_personnePhysique =  $mvmtDrh->get_personnePhysique();
-		$this->_typeMouvement = $mvmtDrh->get_typeMouvement();
+		$this->_typeMouvement = $typeMvmt;
 		$this->_detailMouvement = $mvmtDrh->get_detailMouvement();
 		$this->_typeContrat = $this->_personnePhysique->get_typeContrat();
 		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
@@ -25,8 +25,8 @@ class MvmtDSI extends Mvmt{
 			$this->_direction = $this->_personnePhysique->get_candidat()->get_direction();
 			$this->_poste = $this->_personnePhysique->get_candidat()->get_poste();
 			$this->_dar = Dar::findById($this->_personnePhysique->get_candidat()->get_cleDar());
-			$this->_nomManager = $dar->get_nomManager();
-			$this->_personneRemplacee = $dar->get_personneRemplacee();
+			$this->_nomManager = $this->_dar->get_nomManager();
+			$this->_personneRemplacee = $this->_dar->get_personneRemplacee();
 		}
 	}
 	
@@ -48,11 +48,12 @@ class MvmtDSI extends Mvmt{
 					'".$this->_societes."', '".$this->_direction."', '".$this->_nomManager."',
 					'".$this->_poste."', '".$this->_personneRemplacee."',
 					'".$this->_personnePhysique->get_source()."',
-					CURDATE(),CURTIME(), 'candidat',
+					CURDATE(),CURTIME(), '".$this->_personnePhysique->get_source()."',
 					CURDATE(), CURTIME(), '".$this->_roleTiers."',
-					'".$this->_dar->get_materielinformatique()."
-					";
-		
+					'".$this->_dar->get_materielinformatique()."'
+					);";
+			
+			echo "\n".'Insert DSI : '.$query."\n";
 			// on va chercher tous les enregistrements de la requete
 			$result=Script::$db->prepare($query);
 			$result->execute();

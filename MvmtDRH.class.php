@@ -96,6 +96,8 @@ class MvmtDRH extends Mvmt{
 						'".$this->_nomManager."',
 						'".$this->_detailMouvement."'
 					);";
+			
+			echo "\n".'Insert DRH : '.$query."\n";
 		
 			// on va chercher tous les enregistrements de la requête
 			$result=Script::$db->prepare($query);
