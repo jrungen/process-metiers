@@ -1077,7 +1077,7 @@ function onSave_demande(close) {
 	/*
 	 * JR le 27/03/2017 Exécution de la fonction
 	 */
-	var papActuel = thisComponent.getValue('a07postesbudgetaires');
+	var papActuel = $('#ID_a07postesbudgetaires').val();
 	var papInitiale = thisComponent.getValue('pap_initiale');
 
 	// get-item pour récupérer l'ID de la papInitiale
