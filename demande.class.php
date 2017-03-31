@@ -304,12 +304,8 @@ class Dar {
 		return $this->_modification;
 	}
 
-	public function get_d00materielinformatique(){
-		return $this->_d00materielinformatique;
-	}
-
 	public function get_materielinformatique(){
-		return $this->_materielinformatique;
+		return $this->_d00materielinformatique;
 	}
 
 	public function get_d00metiers(){
@@ -628,12 +624,8 @@ class Dar {
 		$this->_modification = $modification;
 	}
 
-	public function set_d00materielinformatique($d00materielinformatique){
+	public function set_materielinformatique($d00materielinformatique){
 		$this->_d00materielinformatique = $d00materielinformatique;
-	}
-
-	public function set_materielinformatique($materielinformatique){
-		$this->_materielinformatique = $materielinformatique;
 	}
 
 	public function set_d00metiers($d00metiers){

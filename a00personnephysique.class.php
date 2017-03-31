@@ -29,6 +29,10 @@ class PersonnePhysique {
 	private $_nomManager;
 	private $_source;
 	private $_detailMouvement;
+	private $_dateEffet;
+	private $_a00matricule;
+	private $_a00matriculeunique;
+	private $_utilisateur; // Pour lier un user gopaas au PP courant
 
 	/**
 	 * Génére clé personne physique
@@ -56,7 +60,7 @@ class PersonnePhysique {
 		return $personnephysique_cle;
 		
 	}
-
+	
 	/**
 	 * Création d'une personne physique à partir du candidat.
 	 * @param unknown $candidat
@@ -80,7 +84,8 @@ class PersonnePhysique {
 			$this->_numSecuriteSociale = $candidat->get_numSecuriteSociale();
 			$this->_clesecu = $candidat->get_cleSecuriteSociale();
 			$this->_typeContrat = $candidat->get_typeContratGRE();
-			$this->_detailMouvement = $candidat->get_detailMouvement(); 
+			$this->_detailMouvement = $candidat->get_detailMouvement();
+			$this->_dateEffet = $candidat->get_dateArriveeSouhaitee();
 			
 			// Depuis Candidat seléctioné, valeurs par defauts.
 			$this->_materielInformatique = true;
@@ -95,16 +100,88 @@ class PersonnePhysique {
 			
 		}else{
 			$this->_source='personnephysique';
-			//TODO Création directe de Personne physique.
+			//TODO Création directe depuis fiche Personne physique.
 		}
+	}
+	
+	public static function findByCle($clePP){
+		try{
+			// Creation de la requete
+			$query = "SELECT * FROM a00personnephysique WHERE cle = '".$clePP."'";
+		
+			// on va chercher tous les enregistrements de la requete
+			$result=Script::$db->prepare($query);
+			$result->execute();
+		
+			// on dit qu'on veut que le resultat soit recuperable sous forme de tableau
+			$data_pp = $result->fetchAll((PDO::FETCH_OBJ));
+		
+			// on ferme le curseur des r?sultats
+			$result->closeCursor();
+		
+		}
+		catch(PDOException  $e){
+			$errMsg = $e->getMessage();
+			echo $errMsg;
+		}
+		
+		$pp = new PersonnePhysique(null);
+		
+		$pp->_cle = $clePP;
+		$pp->_civilite = $data_pp[0]->a00civilite;
+		$pp->_nom = $data_pp[0]->a00nom;
+		$pp->_prenom = $data_pp[0]->a00prenom;
+		$pp->_adresse = $data_pp[0]->a00adresse;
+		$pp->_complement = $data_pp[0]->a00complement;
+		$pp->_codepostal = $data_pp[0]->a00codepostal;
+		$pp->_nationalite = $data_pp[0]->a00nationalite;
+		$pp->_datenaissance = $data_pp[0]->a00datenaissance;
+		$pp->_departementNaissance = $data_pp[0]->a00departementnaissance;
+		$pp->_lieuNaissance = $data_pp[0]->a00lieunaissance;
+		$pp->_numSecuriteSociale = $data_pp[0]->a00numerosecu;
+		$pp->_clesecu = $data_pp[0]->a00clesecu;
+		$pp->_actif = $data_pp[0]->a00actif;
+		$pp->_typeContrat = $data_pp[0]->a00typecontrat;
+		$pp->_materielInformatique = $data_pp[0]->a00materielinformatique;
+		$pp->_bureau = $data_pp[0]->a00bureau;
+		$pp->_adresseMessagerie = $data_pp[0]->a00adressemail;
+		//TODO $pp->_nomManager = $data_pp[0]->;
+		
+		$pp->_source='personnephysique';
+		
+		return $pp;
+	}
+	
+	public function  get_matricule(){
+		return $this->_a00matricule;
+	}
+	
+	public function set_matricule($_a00matricule){
+		$this->_a00matricule = $_a00matricule;
+	}
+	
+	public function get_matriculeunique(){
+		return $this->_a00matriculeunique;
+	}
+	
+	public function set_matriculeunique($_a00matriculeunique){
+		$this->_a00matriculeunique = $_a00matriculeunique;
+	}
+	
+	public function get_dateEffet(){
+		return $this->_dateEffet;
+	}
+	
+	public function set_dateEffet($dateEffet){
+		$this->_dateEffet = $dateEffet;
 	}
 	
 	public function get_detailMouvement(){
 		return $this->_detailMouvement;
 	}
 	
-	public function set_detailMouvement($_detailMouvement){
-		$this->_detailMouvement = $_detailMouvement;
+	public function set_detailMouvement($detailMouvement){
+		$this->_detailMouvement = $detailMouvement;
 	}
 	
 	public function get_source(){
@@ -334,7 +411,12 @@ class PersonnePhysique {
 	
 	private function postCreate(){
 		// Dans tout les cas de création de personne physique, on crée un mouvment DRH d'arrivée.
-		$mvmtDrhPp = new MvmtDRH($this, TypeMvmt::ARRIVEE);
+		$this->generateMvmt(TypeMvmt::ARRIVEE);	
+	}
+	
+	public function generateMvmt($typeMouvment){
+		//TODO Trouver la condition fonctionelle pour spécifier le type de mvmt Avenant dans la classe postcreate de la PP
+		$mvmtDrhPp = new MvmtDRH($this, $typeMouvment);
 		$mvmtDrhPp->create();
 		$mvmtManager = new MvmtManager($mvmtDrhPp);
 		$mvmtManager->executeActions();

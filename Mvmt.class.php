@@ -17,6 +17,15 @@ abstract class Mvmt {
 	protected $_direction;
 	protected $_nomManager;
 	protected $_personneRemplacee;
+	protected $_dar;
+	
+	public function get_dar(){
+		return $this->_dar;
+	}
+	
+	public function set_dar($dar){
+		$this->_dar = $dar;
+	}
 	
 	public function get_nomManager(){
 		return $this->_nomManager;

@@ -10,6 +10,11 @@ class MvmtDSI extends Mvmt{
 		$this->_mvmtParent = $mvmtDrh;
 		$this->_cle = $mvmtDrh->get_cle();
 		$this->_personnePhysique =  $mvmtDrh->get_personnePhysique();
+		$this->_typeMouvement = $mvmtDrh->get_typeMouvement();
+		$this->_detailMouvement = $mvmtDrh->get_detailMouvement();
+		$this->_typeContrat = $this->_personnePhysique->get_typeContrat();
+		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
+		$this->_nomManager = $this->_personnePhysique->get_nomManager();
 		
 		//Source Fiche Personne Physique.
 		if (is_null($this->_personnePhysique->get_candidat())) {
@@ -19,15 +24,10 @@ class MvmtDSI extends Mvmt{
 			$this->_societes = $this->_personnePhysique->get_candidat()->get_societes();
 			$this->_direction = $this->_personnePhysique->get_candidat()->get_direction();
 			$this->_poste = $this->_personnePhysique->get_candidat()->get_poste();
-			$this->_typeContrat = $this->_personnePhysique->get_candidat()->get_typecontratGRE();
-			$this->_detailMouvement = $this->_personnePhysique->get_candidat()->get_detailMouvement();
-			$dar = Dar::findById($this->_personnePhysique->get_candidat()->get_cleDar());
+			$this->_dar = Dar::findById($this->_personnePhysique->get_candidat()->get_cleDar());
 			$this->_nomManager = $dar->get_nomManager();
 			$this->_personneRemplacee = $dar->get_personneRemplacee();
 		}
-		$this->_typeMouvement = $this->_mvmtParent->get_typeMouvement();
-		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
-		$this->_nomManager = $this->_personnePhysique->get_nomManager();
 	}
 	
 	/**
@@ -42,14 +42,15 @@ class MvmtDSI extends Mvmt{
 						a03societe, a03direction, a03superieurhierarchique,
 						a03poste, a03personneremplacee,
 						creation_par, date_creation, heure_creation, modification_par,
-						date_modification, heure_modification, a03role )
+						date_modification, heure_modification, a03role, a03typematerielinfo)
 					values
 					('".$this->_cle."_dsi', '".$this->_personnePhysique->get_cle()."', '".$this->_mvmtParent->get_cle()."',
 					'".$this->_societes."', '".$this->_direction."', '".$this->_nomManager."',
 					'".$this->_poste."', '".$this->_personneRemplacee."',
 					'".$this->_personnePhysique->get_source()."',
 					CURDATE(),CURTIME(), 'candidat',
-					CURDATE(), CURTIME(), '".$this->_roleTiers."' )
+					CURDATE(), CURTIME(), '".$this->_roleTiers."',
+					'".$this->_dar->get_materielinformatique()."
 					";
 		
 			// on va chercher tous les enregistrements de la requete

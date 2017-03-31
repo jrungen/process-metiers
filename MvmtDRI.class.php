@@ -10,6 +10,11 @@ class MvmtDRI extends Mvmt{
 		$this->_mvmtParent = $mvmtDrh;
 		$this->_cle = $mvmtDrh->get_cle();
 		$this->_personnePhysique =  $mvmtDrh->get_personnePhysique();
+		$this->_typeMouvement = $mvmtDrh->get_typeMouvement();
+		$this->_detailMouvement = $mvmtDrh->get_detailMouvement();
+		$this->_typeContrat = $this->_personnePhysique->get_typeContrat();
+		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
+		$this->_nomManager = $this->_personnePhysique->get_nomManager();
 		
 		//Source Fiche Personne Physique.
 		if (is_null($this->_personnePhysique->get_candidat())) {
@@ -19,14 +24,9 @@ class MvmtDRI extends Mvmt{
 			$this->_societes = $this->_personnePhysique->get_candidat()->get_societes();
 			$this->_direction = $this->_personnePhysique->get_candidat()->get_direction();
 			$this->_poste = $this->_personnePhysique->get_candidat()->get_poste();
-			$this->_typeContrat = $this->_personnePhysique->get_candidat()->get_typecontratGRE();
-			$this->_detailMouvement = $this->_personnePhysique->get_candidat()->get_detailMouvement();
 			$dar = Dar::findById($this->_personnePhysique->get_candidat()->get_cleDar());
 			$this->_personneRemplacee = $dar->get_personneRemplacee();
 		}
-		$this->_typeMouvement = $this->_mvmtParent->get_typeMouvement();
-		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
-		$this->_nomManager = $this->_personnePhysique->get_nomManager();
 	}
 	
 	/**

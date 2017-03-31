@@ -9,6 +9,9 @@ class MvmtManager {
 	private $_source;
 	private $_action;
 	private $_mvmtParent;
+	private $_materielInformatique;
+	private $_bureau;
+	private $_adresseMessagerie;
 	
 	public function MvmtManager ($mvmt){
 		$this->_mvmtParent = $mvmt;
@@ -18,6 +21,22 @@ class MvmtManager {
 			$this->_source = 'Persone physique'; // personne physique
 		}else{
 			$this->_source = 'Candidat'; // candidat seletioné
+		}
+		
+		if (!$this->_mvmtParent->get_personnePhysique()->get_materielInformatique()){
+			$this->_materielInformatique=1;
+		}else{
+			$this->_materielInformatique=0;
+		}
+		if (!$this->_mvmtParent->get_personnePhysique()->get_bureau()){
+			$this->_bureau=1;
+		}else{
+			$this->_bureau=0;
+		}
+		if (!$this->_mvmtParent->get_personnePhysique()->get_adresseMessagerie()){
+			$this->_adresseMessagerie=1;
+		}else{
+			$this->_adresseMessagerie=0;
 		}
 		
 		$this->load_rules();
@@ -32,9 +51,9 @@ class MvmtManager {
 					and mouvement='".$this->_mvmtParent->get_typeMouvement()."' and detail_mouvement='".$this->_mvmtParent->get_detailMouvement()."' 
 					and role='".$this->_mvmtParent->get_roleTiers()."'
 					and typecontrat='".$this->_mvmtParent->get_personnePhysique()->get_typeContrat()."'
-					and materielinformatique='".$this->_mvmtParent->get_personnePhysique()->get_materielInformatique()."'
-					and bureau='".$this->_mvmtParent->get_personnePhysique()->get_bureau()."'
-					and adresse_messagerie='".$this->_mvmtParent->get_personnePhysique()->get_adresseMessagerie()."'
+					and materielinformatique='".$this->_materielInformatique."'
+					and bureau='".$this->_bureau."'
+					and adresse_messagerie='".$this->_adresseMessagerie."'
 					order by ordre ;
 					";
 			
@@ -63,12 +82,14 @@ class MvmtManager {
 			echo '\naction à exécuter : '.$regle->action;
 			switch ($regle->action){
 				case(ActionMvmt::DRH_AVENANT):
+					// Implicite car mvmt créer depuis la PP avec le bouton générer mouvements.
 					break;
 				case(ActionMvmt::DRI_AVENANT):
 					break;
 				case(ActionMvmt::DSI_ENTREE):
 					break;
 				case(ActionMvmt::DRH_SORTIE):
+					echo 'action='.ActionMvmt::DRI_SORTIE;
 					$mvmtDrhSortie = new MvmtDRH($this->_mvmtParent->get_personnePhysique(),TypeMvmt::DEPART);
 					$mvmtDrhSortie->create();
 					break;
@@ -77,6 +98,7 @@ class MvmtManager {
 					$mvmtDriSortie->create();
 					break;
 				case(ActionMvmt::DSI_SORTIE):
+					echo 'action='.ActionMvmt::DSI_SORTIE;
 					$mvmtDsiSortie = new MvmtDSI($this->_mvmtParent,TypeMvmt::DEPART);
 					$mvmtDsiSortie->create();
 					break;
@@ -94,6 +116,7 @@ class MvmtManager {
 					$this->_mvmtParent->get_personnePhysique()->valideRecrutementPAP();
 					break;
 				case(ActionMvmt::DRH_ENTREE_PROLONGATION):
+					// Implicite car mvmt créer depuis la PP avec le bouton générer mouvements.
 					break;
 				case(ActionMvmt::DRI_ENTREE_PROLONGATION):
 					break;
