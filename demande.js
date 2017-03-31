@@ -143,10 +143,6 @@ function onLoad_demande () {
 	};
 	
 	/***********************************************/
-	//-----------------------------------------------
-	// JR le 27/03/2017
-	// Rempli le champ pap_initiale au démarrage de l'application
-	thisComponent.setValue('pap_initiale',thisComponent.getValue('a07postesbudgetaires'));
 
 	//-----------------------------------------------
 	// cette fonction se charge aussi de vérifier la case à cocher de confirmation,
@@ -682,10 +678,11 @@ function onLoad_demande () {
 				mode		: "update_pap",
 				cle_pap		: cle_pap
 			}).done(function(result) {
-				console.log('Fiche '+cle_pap+' mise à jour');			
+				// console.log('Fiche '+cle_pap+' mise à jour');			
 			}).fail(gopaas.dialog.ajaxFail);
+			
 			// Je remet la valeur dans le champ pap_initiale au cas ou l'on vide la connexion le onSave saura qu'il faut remettre à jour le PAP 
-			thisComponent.setValue('pap_initiale',cle_pap);
+			thisComponent.setValue('pap_initiale',$('#ID_a07postesbudgetaires').val());
 		}
 	}
 	/*******************************************************************/
@@ -773,7 +770,18 @@ function onLoad_demande () {
 		thisComponent.ui.find("[name^=date_validation]").attr("disabled","disabled").addClass("disabled");
 		thisComponent.ui.find("[name^=valideur]").siblings("span.input-group-btn").children().attr("disabled","disabled").addClass("disabled");
 	}
-
+	
+	/*
+	 * JR le 27/03/2017
+	 * Rempli le champ pap_initiale au démarrage de l'application
+	 * Je le fait via un timer de 5 secondes pour laisser les get-item de GoPaaS remplir le champ ID_a07postesbudgetaires
+	 */
+    var timerID1 = setTimeout(function() {
+		//console.log('timer lancé');
+		thisComponent.setValue('pap_initiale',$('#ID_a07postesbudgetaires').val());
+		clearInterval(timerID1);
+    }, 5000);
+    
 	//___________________________________________________________________________________________________________
 	//___________________________________________________________________________________________________________
 	//
@@ -1064,44 +1072,33 @@ function onSave_demande(close) {
 		dateFin,
 		typeContrat = thisComponent.getValue("r06typecontrat"),
 		differences = thisComponent.computeDifferences(),
-		listeModif = ""
-	;
+		listeModif = "";
+
 	/*
 	 * JR le 27/03/2017 Exécution de la fonction
 	 */
 	var papActuel = thisComponent.getValue('a07postesbudgetaires');
 	var papInitiale = thisComponent.getValue('pap_initiale');
-		
+
 	// get-item pour récupérer l'ID de la papInitiale
 	if (papInitiale){
-		if (thisComponent.getValue('d00postes')){
-			$.get("webservice/item/get-item.php", {
-				tableName	: "a07postesbudgetaires",
-				itemKey  	: papInitiale
-			})
-			.done(function(data){
-			// je récupère l'intitulé du poste
-				var idpap = data.ida07postesbudgetaires;
+		if (papActuel !== papInitiale) {
+			//console.log('ID PAP '+papInitiale);
+			/*
+			 * FAIRE un UPDATE ITEM
+			 */
+			var formData = {};
+			formData = [{"name":"tableName","value":"a07postesbudgetaires"},{"name":"ida07postesbudgetaires","value":papInitiale},{"name":"dar_attribuee","value":"0"}];
+			formData.push(); // ajoute le nom de la table aux paramètres du formulaire
+
+			$.post( gopaas.url.webservice("item","update-item"), formData )
+			.done(function(updatedItem) {
+			       // lance le callback onSuccess
+			       onSuccess && onSuccess.call(this, updatedItem, close, onSuccess, differences, onFail);
+
+			}).fail(gopaas.dialog.ajaxFail).fail(function() { onFail && onFail.call(thisComponent, close, onSuccess, differences, onFail); });
+		}
 	
-				if (papActuel !== papInitiale) {
-					console.log('Fiche '+papInitiale+' mise à jour');
-					/*
-					 * FAIRE un UPDATE ITEM
-					 */
-					var formData = {};
-					formData = [{"name":"tableName","value":"a07postesbudgetaires"},{"name":"ida07postesbudgetaires","value":idpap},{"name":"cle","value":papInitiale},{"name":"dar_attribuee","value":"0"}];
-					formData.push(); // ajoute le nom de la table aux paramètres du formulaire
-	
-					$.post( gopaas.url.webservice("item","update-item"), formData )
-					.done(function(updatedItem) {
-					       // lance le callback onSuccess
-					       onSuccess && onSuccess.call(this, updatedItem, close, onSuccess, differences, onFail);
-	
-					}).fail(gopaas.dialog.ajaxFail).fail(function() { onFail && onFail.call(thisComponent, close, onSuccess, differences, onFail); });
-				}
-	
-			}).fail(gopaas.dialog.ajaxFail);
-		} // FIN get-item pour récupérer l'ID de la papInitiale
 	}
 	
 	/************************************************/
