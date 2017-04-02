@@ -35,7 +35,13 @@ class MvmtDRH extends Mvmt{
 		$this->_detailMouvement = $this->_personnePhysique->get_detailMouvement();
 		$this->_roleTiers = $this->_personnePhysique->get_roleTiers();
 		$this->_nomManager = $this->_personnePhysique->get_nomManager();
-		$this->_dateEffet = $this->_personnePhysique->get_dateEffet();
+		
+		$this->_dateEffet = $this->_personnePhysique->get_dateDebutContrat();
+		if($this->_typeMouvement == TypeMvmt::DEPART) {
+			if (($this->_typeContrat != TypeContrat::CDI) && ($this->_typeContrat != TypeContrat::CDIOD)){
+				$this->_dateEffet = $this->_personnePhysique->get_dateFinContrat();
+			}
+		}
 		
 		//Source Fiche Personne Physique.
 		if (is_null($personnePhysique->get_candidat())) {

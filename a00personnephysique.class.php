@@ -30,9 +30,12 @@ class PersonnePhysique {
 	private $_source;
 	private $_detailMouvement;
 	private $_dateEffet;
+	private $_a00datedebut;
+	private $_a00datefin;
 	private $_a00matricule;
 	private $_a00matriculeunique;
 	private $_utilisateur; // Pour lier un user gopaas au PP courant
+	private $_a00superieurhierarchique;
 
 	/**
 	 * Génére clé personne physique
@@ -86,6 +89,8 @@ class PersonnePhysique {
 			$this->_typeContrat = $candidat->get_typeContratGRE();
 			$this->_detailMouvement = $candidat->get_detailMouvement();
 			$this->_dateEffet = $candidat->get_dateArriveeSouhaitee();
+			$this->set_dateDebutContrat($candidat->get_dateDebutContrat());
+			$this->set_dateFinContrat($candidat->get_dateFinContrat());
 			
 			// Depuis Candidat seléctioné, valeurs par defauts.
 			$this->_materielInformatique = true;
@@ -145,11 +150,48 @@ class PersonnePhysique {
 		$pp->_materielInformatique = $data_pp[0]->a00materielinformatique;
 		$pp->_bureau = $data_pp[0]->a00bureau;
 		$pp->_adresseMessagerie = $data_pp[0]->a00adressemail;
-		//TODO $pp->_nomManager = $data_pp[0]->;
+		$pp->_a00superieurhierarchique = $data_pp[0]->a00superieurhierarchique;
+		$pp->_utilisateur = $data_pp[0]->utilisateur;
+		$pp->_a00matricule = $data_pp[0]->a00matricule;
+		$pp->_a00matriculeunique = $data_pp[0]->a00matriculeunique;
+		$pp->_a00datedebut = $data_pp[0]->a00datedebut;
+		$pp->_a00datefin = $data_pp[0]->a00datefin;
 		
 		$pp->_source='personnephysique';
 		
 		return $pp;
+	}
+	
+	public function get_dateDebutContrat(){
+		return $this->_a00datedebut;
+	}
+	
+	public function get_dateFinContrat(){
+		return $this->_a00datefin;
+	}
+	
+	public function set_dateDebutContrat($a00datedebut){
+		$this->_a00datedebut = $a00datedebut;
+	}
+	
+	public function set_dateFinContrat($a00datefin){
+		$this->_a00datefin = $a00datefin;
+	}
+	
+	public function get_superieurhierarchique(){
+		return $this->_a00superieurhierarchique;
+	}
+	
+	public function set_superieurhierarchique($a00superieurhierarchique){
+		$this->_a00superieurhierarchique = $a00superieurhierarchique;
+	}
+	
+	public function get_utilisateur(){
+		return $this->_utilisateur;
+	}
+	
+	public function set_utilisateur($utilisateur){
+		$this->_utilisateur = $utilisateur;
 	}
 	
 	public function  get_matricule(){
