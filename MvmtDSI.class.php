@@ -50,10 +50,16 @@ class MvmtDSI extends Mvmt{
 					'".$this->_personnePhysique->get_source()."',
 					CURDATE(),CURTIME(), '".$this->_personnePhysique->get_source()."',
 					CURDATE(), CURTIME(), '".$this->_roleTiers."',
+<<<<<<< HEAD
 					'".$this->_dar->get_materielinformatique()."'
 					);";
 			
 			echo "\n".'Insert DSI : '.$query."\n";
+=======
+					'".$this->_dar->get_materielinformatique()."' )
+					";
+			echo 'Insert DSI : '.$query;
+>>>>>>> 1b54a42c2c589c4924387f10b458df963aaabace
 			// on va chercher tous les enregistrements de la requete
 			$result=Script::$db->prepare($query);
 			$result->execute();

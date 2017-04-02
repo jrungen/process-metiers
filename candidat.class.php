@@ -163,6 +163,8 @@ class Candidat {
 		$candidat->set_detailMouvement($data[0]->r32detailmouvement);
 		$candidat->set_cle($data[0]->cle);
 		$candidat->set_nomManager($data[0]->cs00superieurhierarchique);
+		$candidat->set_dateDebutContrat($data[0]->t01_30_date_debut_contrat);
+		$candidat->set_dateFinContrat($data[0]->t01_31_date_fin_contrat);
 		return $candidat;
 	
 	}
