@@ -47,17 +47,10 @@ class MvmtDRI extends Mvmt{
 					'".$this->_poste."', '".$this->_personneRemplacee."', '".$this->_typeContrat."',
 					'".$this->_personnePhysique->get_source()."',
 					CURDATE(), CURTIME(), '".$this->_personnePhysique->get_source()."',
-<<<<<<< HEAD
 					CURDATE(),  CURTIME(), '".$this->_roleTiers."'
 					);";
 
 			echo "\n".'Insert DRI : '.$query."\n";
-=======
-					CURDATE(),  CURTIME(), '".$this->_roleTiers."' )
-					";
-
-			echo 'Insert DRI : '.$query;
->>>>>>> 1b54a42c2c589c4924387f10b458df963aaabace
 			// on va chercher tous les enregistrements de la requete
 			$result=Script::$db->prepare($query);
 			$result->execute();
